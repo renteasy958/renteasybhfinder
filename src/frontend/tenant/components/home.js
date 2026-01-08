@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/home.css';
 import Navbar from './navbar';
 
@@ -49,6 +49,42 @@ const Home = ({ onNavigateToBHDetails, onNavigate }) => {
             <div className="boarding-card-image"></div>
             <h3 className="boarding-card-name">Riverside Place</h3>
             <p className="boarding-card-address">987 River Drive, City</p>
+          </div>
+
+          <div className="boarding-card" onClick={onNavigateToBHDetails}>
+            <div className="boarding-card-image"></div>
+            <h3 className="boarding-card-name">Sunset Villa</h3>
+            <p className="boarding-card-address">234 Sunset Blvd, City</p>
+          </div>
+
+          <div className="boarding-card" onClick={onNavigateToBHDetails}>
+            <div className="boarding-card-image"></div>
+            <h3 className="boarding-card-name">Lakeside Manor</h3>
+            <p className="boarding-card-address">567 Lake View Dr, City</p>
+          </div>
+
+          <div className="boarding-card" onClick={onNavigateToBHDetails}>
+            <div className="boarding-card-image"></div>
+            <h3 className="boarding-card-name">Forest Haven</h3>
+            <p className="boarding-card-address">890 Forest Road, City</p>
+          </div>
+
+          <div className="boarding-card" onClick={onNavigateToBHDetails}>
+            <div className="boarding-card-image"></div>
+            <h3 className="boarding-card-name">Urban Nest</h3>
+            <p className="boarding-card-address">432 Urban Street, City</p>
+          </div>
+
+          <div className="boarding-card" onClick={onNavigateToBHDetails}>
+            <div className="boarding-card-image"></div>
+            <h3 className="boarding-card-name">Meadow House</h3>
+            <p className="boarding-card-address">765 Meadow Lane, City</p>
+          </div>
+
+          <div className="boarding-card" onClick={onNavigateToBHDetails}>
+            <div className="boarding-card-image"></div>
+            <h3 className="boarding-card-name">Peaceful Pines</h3>
+            <p className="boarding-card-address">198 Pine Avenue, City</p>
           </div>
         </div>
       </div>

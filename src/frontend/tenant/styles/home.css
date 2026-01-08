@@ -12,12 +12,14 @@
   background-repeat: no-repeat;
   background-attachment: scroll;
   overflow-y: auto;
+  padding-bottom: 40px;
 }
 
 .home-hero {
   margin-top: 120px;
   margin-left: 40px;
   margin-right: 40px;
+  margin-bottom: 40px;
   text-align: left;
   max-width: calc(100vw - 80px);
 }
@@ -38,11 +40,11 @@
 }
 
 .boarding-cards-container {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
   margin-top: 20px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  width: 100%;
 }
 
 .boarding-card {
@@ -108,4 +110,103 @@
   font-size: 20px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .home-hero {
+    margin-top: 90px;
+    margin-left: 20px;
+    margin-right: 20px;
+    max-width: calc(100vw - 40px);
+  }
+
+  .home-hero-text {
+    font-size: 36px;
+  }
+
+  .home-hero-subtitle {
+    font-size: 24px;
+    margin-top: 40px;
+  }
+
+  .boarding-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .boarding-card {
+    min-height: 280px;
+    padding: 12px;
+  }
+
+  .boarding-card-image {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    background-size: cover;
+    background-position: center center;
+    background-attachment: scroll;
+  }
+
+  .home-hero {
+    margin-top: 70px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 80px;
+    max-width: calc(100vw - 30px);
+  }
+
+  .home-hero-text {
+    font-size: 24px;
+  }
+
+  .home-hero-subtitle {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+
+  .boarding-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 10px 80px 5px;
+  }
+
+  .boarding-card {
+    padding: 10px;
+    width: 150px;
+    min-width: 150px;
+    height: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .boarding-card-image {
+    width: 100%;
+    height: 85px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+  }
+
+  .boarding-card-name {
+    font-size: 12px;
+    margin: 0 0 4px 0;
+    font-weight: 600;
+  }
+
+  .boarding-card-address {
+    font-size: 10px;
+    line-height: 1.2;
+  }
 }

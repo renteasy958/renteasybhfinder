@@ -384,3 +384,14 @@
 .reserve-btn:active {
   transform: translateY(0);
 }
+
+@media (max-width: 480px) {
+  .bhdetails-wrapper {
+    top: 60px;
+    bottom: 60px;
+  }
+  
+  .bhdetails-container {
+    padding-bottom: 60px;
+  }
+}

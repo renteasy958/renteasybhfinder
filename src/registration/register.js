@@ -104,6 +104,24 @@ const Register = ({ onNavigateToLogin, onNavigateToHome }) => {
         createdAt: new Date().toISOString()
       });
 
+      // Save user data to localStorage
+      localStorage.setItem('userData', JSON.stringify({
+        userType: 'tenant',
+        firstName: tenantData.firstName,
+        middleName: tenantData.middleName,
+        surname: tenantData.surname,
+        civilStatus: tenantData.civilStatus,
+        gender: tenantData.gender,
+        birthdate: tenantData.birthdate,
+        street: tenantData.street,
+        barangay: tenantData.barangay,
+        city: tenantData.city,
+        province: tenantData.province,
+        mobileNumber: tenantData.mobileNumber,
+        occupationType: tenantData.occupationType,
+        email: tenantData.email
+      }));
+
       console.log('Registration successful! Showing animation...');
       // Show success animation AFTER saving
       setShowSuccess(true);

@@ -5,6 +5,7 @@ import Register from './registration/register';
 import Home from './frontend/tenant/components/home';
 import BHDetails from './frontend/tenant/components/bhdetails';
 import Liked from './frontend/tenant/components/liked';
+import Profile from './frontend/tenant/components/profile';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('login');
@@ -16,6 +17,7 @@ function App() {
       {currentPage === 'home' && <Home onNavigateToBHDetails={() => setCurrentPage('bhdetails')} onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'bhdetails' && <BHDetails onNavigateBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'liked' && <Liked onNavigate={(page) => setCurrentPage(page)} />}
+      {currentPage === 'profile' && <Profile onNavigate={(page) => setCurrentPage(page)} />}
     </div>
   );
 }

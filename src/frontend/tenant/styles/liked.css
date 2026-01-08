@@ -71,3 +71,9 @@
   color: #012e6a;
   margin: 0;
 }
+
+@media (max-width: 480px) {
+  .liked-content {
+    padding: 80px 20px 80px 20px;
+  }
+}

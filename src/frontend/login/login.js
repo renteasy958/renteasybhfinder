@@ -37,6 +37,25 @@ const Login = ({ onNavigateToRegister, onNavigateToHome }) => {
         const userData = userDoc.data();
         console.log('User logged in:', userData);
         
+        // Save user data to localStorage for profile page
+        const userDataForStorage = {
+          userType: userData.userType,
+          firstName: userData.firstName,
+          middleName: userData.middleName,
+          surname: userData.surname,
+          civilStatus: userData.civilStatus,
+          gender: userData.gender,
+          birthdate: userData.birthdate,
+          street: userData.address?.street || userData.street,
+          barangay: userData.address?.barangay || userData.barangay,
+          city: userData.address?.city || userData.city,
+          province: userData.address?.province || userData.province,
+          mobileNumber: userData.mobileNumber,
+          occupationType: userData.occupationType,
+          email: userData.email
+        };
+        localStorage.setItem('userData', JSON.stringify(userDataForStorage));
+        
         // Redirect to home (tenant page) regardless of userType
         console.log('Redirecting to home...');
         onNavigateToHome();
