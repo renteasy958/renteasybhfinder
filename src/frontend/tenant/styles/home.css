@@ -1,0 +1,111 @@
+.home-container {
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-image: url('../../images/home.png');
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  overflow-y: auto;
+}
+
+.home-hero {
+  margin-top: 120px;
+  margin-left: 40px;
+  margin-right: 40px;
+  text-align: left;
+  max-width: calc(100vw - 80px);
+}
+
+.home-hero-text {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.home-hero-subtitle {
+  font-size: 35px;
+  font-weight: 800;
+  color: #6b7280;
+  margin-top: 70px;
+  margin-bottom: 20px;
+}
+
+.boarding-cards-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.boarding-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  width: 260px;
+  min-width: 260px;
+  min-height: 320px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.boarding-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.boarding-card-image {
+  width: 100%;
+  height: 200px;
+  background-color: #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.boarding-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.boarding-card-address {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.text-gray {
+  color: #6b7280;
+}
+
+.text-blue {
+  color: #012e6a;
+}
+
+.home-content {
+  text-align: center;
+  color: white;
+  padding: 40px;
+}
+
+.home-title {
+  font-size: 48px;
+  font-weight: 300;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.home-subtitle {
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+}

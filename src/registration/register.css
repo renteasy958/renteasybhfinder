@@ -1,0 +1,476 @@
+.register-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  height: 100%;
+  background-image: url('../frontend/images/login.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.register-modal {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  backdrop-filter: blur(10px);
+}
+
+.register-form-modal {
+  max-width: 950px;
+  padding: 30px 40px;
+}
+
+.register-selection-modal {
+  max-width: 500px;
+}
+
+.register-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #1a1a1a;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+}
+
+.register-tabs {
+  display: flex;
+  width: 100%;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  padding: 4px;
+  gap: 4px;
+}
+
+.register-tab {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 8px;
+}
+
+.register-tab:hover {
+  background-color: #e8e8e8;
+  color: #2c2c2c;
+}
+
+.register-tab-active {
+  background-color: #012e6a;
+  color: white;
+  box-shadow: 0 2px 8px rgba(1, 46, 106, 0.2);
+}
+
+.register-tab-active:hover {
+  background-color: #012e6a;
+  color: white;
+}
+
+.register-user-type-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.register-type-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #012e6a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.register-type-button:hover {
+  background-color: #011d44;
+}
+
+.register-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.register-input-group {
+  margin-bottom: 0;
+  position: relative;
+  width: 100%;
+  flex: 1;
+}
+
+.register-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+  color: #2c2c2c;
+}
+
+.register-input:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  color: #9ca3af;
+}
+
+.register-full-width {
+  grid-column: 1 / -1;
+}
+
+.register-input:focus {
+  outline: none;
+  border-color: #012e6a;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(1, 46, 106, 0.05);
+}
+
+.register-password-group {
+  position: relative;
+}
+
+.register-eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  color: #666;
+  transition: color 0.3s;
+}
+
+.register-eye-icon:hover {
+  color: #012e6a;
+}
+
+.register-occupation-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.register-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 400;
+}
+
+.register-radio-label input[type="radio"] {
+  display: none;
+}
+
+.register-radio-circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.register-radio-label:hover .register-radio-circle {
+  border-color: #012e6a;
+}
+
+.register-radio-label input[type="radio"]:checked + .register-radio-circle {
+  border-color: #012e6a;
+}
+
+.register-radio-label input[type="radio"]:checked + .register-radio-circle::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: #012e6a;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.register-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
+  margin: 25px 0;
+}
+
+.register-section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #012e6a;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  letter-spacing: 0.3px;
+}
+
+.register-button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.register-back-button,
+.register-submit-button {
+  padding: 11px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.register-back-button {
+  background-color: #f5f5f5;
+  color: #4b5563;
+  flex: 0 1 auto;
+  border: 1.5px solid #e8e8e8;
+}
+
+.register-back-button:hover {
+  background-color: #e8e8e8;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+}
+
+.register-submit-button {
+  background-color: #012e6a;
+  color: white;
+  flex: 0 1 auto;
+  margin-left: auto;
+  box-shadow: 0 2px 8px rgba(1, 46, 106, 0.2);
+}
+
+.register-error-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border-left: 4px solid #dc2626;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.register-submit-button:hover {
+  background-color: #011d44;
+  box-shadow: 0 4px 12px rgba(1, 46, 106, 0.3);
+  transform: translateY(-1px);
+}
+
+.register-submit-button:active,
+.register-back-button:active {
+  transform: translateY(0);
+}
+
+.register-back-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.register-back-link a,
+.register-link {
+  color: #012e6a;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.register-back-link a:hover,
+.register-link:hover {
+  color: #011d44;
+  text-decoration: underline;
+}
+
+/* Success Animation Styles */
+.register-success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: register-fadeIn 0.3s ease;
+}
+
+.register-success-animation {
+  text-align: center;
+}
+
+.register-checkmark {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: block;
+}
+
+.register-checkmark-circle {
+  stroke: #012e6a;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  animation: register-fill 0.4s ease-in-out 0.4s forwards, register-scale 0.3s ease-in-out 0.9s both;
+}
+
+.register-checkmark-check {
+  stroke: #012e6a;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: register-stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+.register-success-text {
+  color: white;
+  font-size: 24px;
+  font-weight: 500;
+  margin-top: 30px;
+  opacity: 0;
+  animation: register-fadeIn 0.5s ease 1s forwards;
+}
+
+@keyframes register-stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes register-fill {
+  100% {
+    fill: #012e6a;
+  }
+}
+
+@keyframes register-scale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes register-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .register-overlay {
+    padding: 10px;
+  }
+
+  .register-modal {
+    padding: 25px;
+    max-width: 100%;
+  }
+
+  .register-form-modal {
+    padding: 20px;
+  }
+
+  .register-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .register-form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .register-input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .register-occupation-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .register-button-group {
+    flex-direction: column;
+  }
+
+  .register-back-button,
+  .register-submit-button {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .register-type-button {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .register-section-title {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-modal {
+    padding: 20px;
+  }
+
+  .register-title {
+    font-size: 20px;
+  }
+
+  .register-input {
+    font-size: 13px;
+  }
+}

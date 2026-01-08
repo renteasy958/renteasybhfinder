@@ -1,0 +1,73 @@
+.liked-container {
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.liked-content {
+  padding: 100px 40px 40px 40px;
+}
+
+.liked-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 30px;
+}
+
+.liked-empty {
+  font-size: 18px;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.liked-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.liked-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.liked-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.liked-card-image {
+  width: 100%;
+  height: 200px;
+  background-color: #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.liked-card-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.liked-card-address {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+}
+
+.liked-card-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #012e6a;
+  margin: 0;
+}
