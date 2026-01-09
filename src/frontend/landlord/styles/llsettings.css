@@ -1,0 +1,45 @@
+.llsettings-container {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+}
+
+.llsettings-content {
+  padding: 100px 40px 40px 40px;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.settings-item {
+  background: white;
+  border-radius: 8px;
+  padding: 18px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.settings-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #012e6a;
+}
+
+.settings-arrow {
+  font-size: 28px;
+  color: #6b7280;
+  font-weight: 300;
+}

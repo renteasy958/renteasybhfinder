@@ -4,6 +4,10 @@ import Navbar from './navbar';
 
 const BHDetails = ({ onNavigateBack, onNavigate }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [referenceNumber, setReferenceNumber] = useState('');
   
   const boardingHouse = {
     name: 'Sunrise Residence',
@@ -160,9 +164,104 @@ const BHDetails = ({ onNavigateBack, onNavigate }) => {
             </ul>
           </div>
           
-          <button className="reserve-btn">Reserve</button>
+          <button className="reserve-btn" onClick={() => setShowModal(true)}>Reserve</button>
         </div>
       </div>
+      
+      {showModal && !showPayment && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-x" onClick={() => setShowModal(false)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <h2 className="modal-title">RESERVATION NOTICE</h2>
+            <p className="modal-text">
+              A 50 pesos reservation fee is required to confirm your reservation. 
+              Please wait for the approval of the landlord.
+            </p>
+            <button className="modal-close-btn" onClick={() => setShowPayment(true)}>Proceed</button>
+          </div>
+        </div>
+      )}
+      
+      {showPayment && (
+        <div className="modal-overlay" onClick={() => { setShowModal(false); setShowPayment(false); }}>
+          <div className="modal-content payment-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-x" onClick={() => { setShowModal(false); setShowPayment(false); }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <h2 className="modal-title">PAYMENT</h2>
+            
+            <div className="payment-content">
+              <div className="qr-section">
+                <img src={require('../../images/50.jpg')} alt="QR Code" className="qr-code" />
+                <div className="gcash-label">GCash</div>
+              </div>
+              
+              <div className="payment-details">
+                <h3 className="payment-name">RENT EASY</h3>
+                <p className="payment-account">Account Number: 09158706048</p>
+                
+                <div className="reference-input-group">
+                  <label className="reference-label">Reference Number</label>
+                  <input 
+                    type="text" 
+                    className="reference-input" 
+                    placeholder="Enter reference number"
+                    value={referenceNumber}
+                    onChange={(e) => setReferenceNumber(e.target.value)}
+                  />
+                </div>
+                
+                <button 
+                  className="submit-btn" 
+                  onClick={() => { setShowPayment(false); setShowSuccess(true); }}
+                  disabled={!referenceNumber.trim()}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showSuccess && (
+        <div className="modal-overlay">
+          <div className="modal-content success-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="success-checkmark">
+              <svg className="checkmark" viewBox="0 0 52 52">
+                <circle className="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                <path className="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+              </svg>
+            </div>
+            <p className="success-text">
+              Your transaction is successful. Please wait for the approval of the landlord.
+            </p>
+            <button 
+              className="modal-close-btn" 
+              onClick={() => { 
+                setShowModal(false); 
+                setShowPayment(false); 
+                setShowSuccess(false); 
+                setReferenceNumber(''); 
+                onNavigate('home');
+                setTimeout(() => {
+                  window.location.reload();
+                }, 100);
+              }}
+            >
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

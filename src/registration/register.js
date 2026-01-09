@@ -4,7 +4,7 @@ import { auth, db } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
-const Register = ({ onNavigateToLogin, onNavigateToHome }) => {
+const Register = ({ onNavigateToLogin, onNavigateToHome, onNavigateToLLHome }) => {
   const [userType, setUserType] = useState('tenant');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -187,7 +187,7 @@ const Register = ({ onNavigateToLogin, onNavigateToHome }) => {
       console.log('Landlord registration successful:', userCredential.user);
       setShowSuccess(true);
       setTimeout(() => {
-        onNavigateToLogin();
+        onNavigateToLLHome();
       }, 3000);
     } catch (error) {
       console.error('Registration error:', error);

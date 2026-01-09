@@ -154,13 +154,14 @@
     background-size: cover;
     background-position: center center;
     background-attachment: scroll;
+    padding-bottom: 85px;
   }
 
   .home-hero {
-    margin-top: 70px;
+    margin-top: 80px;
     margin-left: 15px;
     margin-right: 15px;
-    margin-bottom: 80px;
+    margin-bottom: 20px;
     max-width: calc(100vw - 30px);
   }
 
@@ -177,7 +178,7 @@
   .boarding-cards-container {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    padding: 0 10px 80px 5px;
+    padding: 0 5px 20px 5px;
   }
 
   .boarding-card {

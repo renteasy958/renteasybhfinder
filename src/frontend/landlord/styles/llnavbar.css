@@ -1,0 +1,532 @@
+.llnavbar-container {
+  position: fixed;
+  top: 0;
+  font-family: 'Poppins', sans-serif;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #012e6a;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  gap: 30px;
+}
+
+.llnavbar-logo {
+  flex: 0 0 auto;
+}
+
+.llnavbar-logo img {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+}
+
+.llnavbar-center-links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+}
+
+.llnavbar-center-link {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.llnavbar-center-link:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.llnavbar-balance {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  white-space: nowrap;
+  margin-right: 45px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.llnavbar-balance:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.balance-amount {
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.llsettings-dropdown {
+  position: relative;
+}
+
+.llsettings-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  min-width: 180px;
+  z-index: 1001;
+}
+
+.llsettings-dropdown-item {
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.llsettings-dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.llnavbar-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.llnavbar-link {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.llnavbar-link svg {
+  display: none;
+}
+
+.llnavbar-link:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.llsettings-dropdown {
+  position: relative;
+}
+
+.llsettings-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  min-width: 160px;
+  z-index: 1001;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.llsettings-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #374151;
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.llsettings-dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.llsettings-dropdown-item svg {
+  flex-shrink: 0;
+}
+
+.llsettings-dropdown-item span {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .llnavbar-container {
+    padding: 0 20px;
+    gap: 15px;
+    height: 60px;
+  }
+
+  .llnavbar-logo {
+    display: none;
+  }
+
+  .llnavbar-center-links {
+    gap: 20px;
+  }
+
+  .llnavbar-center-link {
+    font-size: 13px;
+  }
+
+  .llnavbar-balance {
+    font-size: 13px;
+    padding: 6px 12px;
+    margin-right: 0;
+  }
+
+  .llsettings-dropdown-menu {
+    min-width: 140px;
+  }
+
+  .llsettings-dropdown-item {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
+  .withdrawal-modal {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .withdrawal-modal h3 {
+    font-size: 20px;
+  }
+
+  .withdrawal-form input {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .llnavbar-container {
+    height: 60px;
+    padding: 0 15px;
+    gap: 10px;
+  }
+
+  .llnavbar-logo {
+    display: none;
+  }
+
+  .llnavbar-center-links {
+    gap: 12px;
+  }
+
+  .llnavbar-center-link {
+    font-size: 11px;
+  }
+
+  .llnavbar-balance {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .withdrawal-modal {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .withdrawal-modal h3 {
+    font-size: 18px;
+  }
+
+  .withdrawal-form {
+    gap: 15px;
+  }
+
+  .withdrawal-form label {
+    font-size: 12px;
+  }
+
+  .withdrawal-form input {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .withdrawal-form .submit-btn {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .withdrawal-success-content {
+    padding: 30px 20px;
+  }
+
+  .withdrawal-success-content h2 {
+    font-size: 22px;
+  }
+
+  .withdrawal-success-content p {
+    font-size: 14px;
+  }
+
+  .withdrawal-checkmark {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}
+
+.withdrawal-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2001;
+}
+
+.withdrawal-modal h3 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: #f3f4f6;
+  color: #1a1a1a;
+}
+
+.withdrawal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.withdrawal-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.withdrawal-form label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  font-family: 'Poppins', sans-serif;
+}
+
+.withdrawal-form input {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.3s ease;
+}
+
+.withdrawal-form input:focus {
+  outline: none;
+  border-color: #012e6a;
+}
+
+.withdrawal-form .submit-btn {
+  background: #012e6a;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.withdrawal-form .submit-btn:hover {
+  background: #014b9f;
+}
+
+.withdrawal-success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  animation: fadeIn 0.3s ease;
+}
+
+.withdrawal-success-content {
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.5s ease;
+}
+
+.withdrawal-success-content h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  font-family: 'Poppins', sans-serif;
+  color: #1a1a1a;
+}
+
+.withdrawal-success-content p {
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #6b7280;
+}
+
+.withdrawal-checkmark {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  border-radius: 50%;
+}
+
+.withdrawal-checkmark-circle {
+  stroke: #22c55e;
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: checkmarkStroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.withdrawal-checkmark-check {
+  stroke: white;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: checkmarkStroke 0.3s 0.8s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.withdrawal-checkmark {
+  animation: checkmarkScale 0.3s 0.9s both, checkmarkFill 0.4s 1.0s ease-out forwards;
+}
+
+@keyframes checkmarkStroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes checkmarkScale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.15, 1.15, 1);
+  }
+}
+
+@keyframes checkmarkFill {
+  100% {
+    box-shadow: inset 0 0 0 50px #22c55e;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

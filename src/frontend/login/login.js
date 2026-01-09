@@ -4,7 +4,7 @@ import { auth, db } from '../../firebase/config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
-const Login = ({ onNavigateToRegister, onNavigateToHome }) => {
+const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -56,9 +56,15 @@ const Login = ({ onNavigateToRegister, onNavigateToHome }) => {
         };
         localStorage.setItem('userData', JSON.stringify(userDataForStorage));
         
-        // Redirect to home (tenant page) regardless of userType
-        console.log('Redirecting to home...');
-        onNavigateToHome();
+        // Redirect based on userType
+        console.log('User type:', userData.userType);
+        if (userData.userType === 'landlord') {
+          console.log('Redirecting to landlord home...');
+          onNavigateToLLHome();
+        } else {
+          console.log('Redirecting to tenant home...');
+          onNavigateToHome();
+        }
       } else {
         console.log('User data not found in Firestore');
         setError('User data not found');
