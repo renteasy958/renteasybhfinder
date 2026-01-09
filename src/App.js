@@ -9,6 +9,7 @@ import Profile from './frontend/tenant/components/profile';
 import LLHome from './frontend/landlord/components/llhome';
 import LLReservations from './frontend/landlord/components/llreservations';
 import AddBH from './frontend/landlord/components/addbh';
+import LLHistory from './frontend/landlord/components/llhistory';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(() => {
@@ -30,6 +31,7 @@ function App() {
       {currentPage === 'llhome' && <LLHome onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'llreservations' && <LLReservations onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'addbh' && <AddBH onNavigate={(page) => setCurrentPage(page)} />}
+      {currentPage === 'llhistory' && <LLHistory onNavigate={(page) => setCurrentPage(page)} />}
     </div>
   );
 }

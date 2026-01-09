@@ -1,0 +1,216 @@
+.llhistory-container {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+}
+
+.llhistory-content {
+  padding: 100px 40px 40px 40px;
+}
+
+.llhistory-content h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #012e6a;
+  margin-bottom: 20px;
+}
+
+.llhistory-content p {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.history-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.history-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.history-icon {
+  font-size: 32px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.history-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-type {
+  font-size: 18px;
+  font-weight: 600;
+  color: #012e6a;
+}
+
+.history-info {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.history-amount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.history-date {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.history-status {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+
+.no-history {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+}
+
+.no-history p {
+  font-size: 18px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.history-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .llhistory-content {
+    padding: 80px 20px 20px 20px;
+  }
+
+  .llhistory-content h1 {
+    font-size: 24px;
+  }
+
+  .llhistory-content p {
+    font-size: 14px;
+  }
+
+  .history-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .history-icon {
+    font-size: 28px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .history-details {
+    width: 100%;
+  }
+
+  .history-status {
+    width: 100%;
+    text-align: center;
+  }
+
+  .history-type {
+    font-size: 16px;
+  }
+
+  .history-info {
+    font-size: 13px;
+  }
+
+  .history-amount {
+    font-size: 14px;
+  }
+
+  .history-box {
+    padding: 15px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .llhistory-content {
+    padding: 70px 15px 15px 15px;
+  }
+
+  .llhistory-content h1 {
+    font-size: 20px;
+  }
+
+  .history-card {
+    padding: 12px;
+  }
+
+  .history-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .history-type {
+    font-size: 14px;
+  }
+
+  .history-info {
+    font-size: 12px;
+  }
+
+  .history-amount {
+    font-size: 13px;
+  }
+
+  .history-date {
+    font-size: 11px;
+  }
+
+  .history-status {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .history-box {
+    padding: 10px 4px;
+  }
+}
