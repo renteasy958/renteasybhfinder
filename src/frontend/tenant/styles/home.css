@@ -42,13 +42,12 @@
 
 /* Container for each row of 5 cards */
 .boarding-cards-row {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
   gap: 15px;
   margin-top: 20px;
   width: 100%;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
+  justify-items: center;
 }
 
 /* Remove old grid container, but keep for mobile below */
