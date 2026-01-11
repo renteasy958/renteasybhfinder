@@ -1,0 +1,202 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-content-bh {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #888;
+  cursor: pointer;
+}
+
+.modal-images {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.modal-img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+.modal-details {
+  margin-bottom: 12px;
+}
+.modal-bh-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+.modal-info-row {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+.modal-label {
+  font-weight: 600;
+  color: #012e6a;
+  margin-right: 6px;
+}
+.modal-price {
+  color: #22c55e;
+  font-weight: 600;
+}
+.modal-amenities {
+  display: flex;
+  gap: 24px;
+  margin: 12px 0;
+}
+.amenities-section {
+  flex: 1;
+}
+.amenities-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.amenity-item {
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  margin: 0;
+  flex: 0 0 calc(33.333% - 8px);
+  box-sizing: border-box;
+  text-align: center;
+  white-space: nowrap;
+}
+.amenity-item.included {
+  color: #22c55e;
+  border-color: #22c55e;
+}
+.amenity-item.excluded {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+.modal-landlord-info {
+  margin: 16px 0 8px 0;
+  font-size: 15px;
+}
+.modal-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+}
+.modal-btn {
+  padding: 8px 22px;
+  border-radius: 6px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.modal-btn.reject {
+  background: #ef4444;
+  color: #fff;
+}
+.modal-btn.approve {
+  background: #22c55e;
+  color: #fff;
+}
+.admin-page {
+  padding: 32px;
+  min-height: 400px;
+  font-size: 1.2rem;
+}
+
+.bh-cards-list {
+  margin-top: 24px;
+}
+
+.card-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: nowrap;
+}
+
+.rectangle-card {
+  width: 250px;
+  height: 150px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.card-image-container {
+  width: 50%;
+  height: 100%;
+  background: #d1d5db;
+  border-right: 1px solid #e5e7eb;
+}
+
+.card-content {
+  width: 50%;
+  height: 100%;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+}
+
+.card-name {
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.card-type {
+  color: #6b7280;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.card-price {
+  color: #22c55e;
+  font-size: 15px;
+  font-weight: 600;
+}

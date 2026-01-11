@@ -1,15 +1,23 @@
-import LLNavbar from './llnavbar';
-const LLHistory = ({ onNavigate }) => {
+// src/frontend/tenant/components/history.js
+// Tenant transaction history component
+// This is where all the transactions of the tenant will be recorded, such as reservations, refund requests, and more.
+import React from 'react';
+import Navbar from './navbar';
+import '../styles/history.css';
+import '../styles/llhistory.css';
+
+
+const History = ({ onNavigate }) => {
   const historyData = [
-    { id: 1, action: 'Reservation', date: '2026-01-05', status: 'Completed' },
-    { id: 2, action: 'Withdrawal', date: '2026-01-03', status: 'Completed' },
-    { id: 3, action: 'Listing', date: '2026-01-01', status: 'Rejected' },
-    { id: 4, action: 'Reservation', date: '2026-01-10', status: 'Pending' },
+    { id: 1, action: 'Reservation', date: '2025-12-01', status: 'Completed' },
+    { id: 2, action: 'Viewed', date: '2025-11-15', status: 'Completed' },
+    { id: 3, action: 'Request Refund', date: '2025-12-10', status: 'Pending' },
+    { id: 4, action: 'Reservation', date: '2025-12-20', status: 'Pending' },
   ];
 
   return (
     <div className="llreservations-container">
-      <LLNavbar onNavigate={onNavigate} />
+      <Navbar onNavigate={onNavigate} />
       <div className="llreservations-content">
         <div className="reservations-list">
           {historyData.map((item) => (
@@ -25,4 +33,4 @@ const LLHistory = ({ onNavigate }) => {
   );
 };
 
-export default LLHistory;
+export default History;

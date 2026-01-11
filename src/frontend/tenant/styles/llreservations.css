@@ -1,0 +1,52 @@
+/* Duplicate of landlord's llreservations.css for tenant history card styling */
+.llreservations-container {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+}
+
+.llreservations-content {
+  padding: 100px 40px 40px 40px;
+}
+
+.llreservations-content h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #012e6a;
+  margin-bottom: 20px;
+}
+
+.llreservations-content p {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.reservations-list {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reservation-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.reservation-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #012e6a;
+}

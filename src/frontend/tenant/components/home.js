@@ -1,22 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/home.css';
 import Navbar from './navbar';
 
 const Home = ({ onNavigateToBHDetails, onNavigate }) => {
-  const boardingHouses = [
-    { id: 1, name: 'Sunrise Residence', address: '123 Main Street, City' },
-    { id: 2, name: 'Ocean View Inn', address: '456 Beach Road, City' },
-    { id: 3, name: 'Mountain Lodge', address: '789 Hill Avenue, City' },
-    { id: 4, name: 'City Center House', address: '321 Downtown Blvd, City' },
-    { id: 5, name: 'Garden Apartments', address: '654 Park Lane, City' },
-    { id: 6, name: 'Riverside Place', address: '987 River Drive, City' },
-    { id: 7, name: 'Sunset Villa', address: '234 Sunset Blvd, City' },
-    { id: 8, name: 'Lakeside Manor', address: '567 Lake View Dr, City' },
-    { id: 9, name: 'Forest Haven', address: '890 Forest Road, City' },
-    { id: 10, name: 'Urban Nest', address: '432 Urban Street, City' },
-    { id: 11, name: 'Meadow House', address: '765 Meadow Lane, City' },
-    { id: 12, name: 'Peaceful Pines', address: '198 Pine Avenue, City' }
-  ];
+  // 10 samples for each section
+  const listings = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    name: `Listing ${i + 1}`,
+    address: `${100 + i} Main St, City`
+  }));
+  const pending = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 101,
+    name: `Pending ${i + 1}`,
+    address: `${200 + i} Pending Ave, City`
+  }));
+  const occupied = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 201,
+    name: `Occupied ${i + 1}`,
+    address: `${300 + i} Occupied Rd, City`
+  }));
+
+  const [showAllListings, setShowAllListings] = useState(false);
+  const [showAllPending, setShowAllPending] = useState(false);
+  const [showAllOccupied, setShowAllOccupied] = useState(false);
+
+  // Helper to chunk array into rows of 5
+  const chunkRows = (arr) => {
+    const rows = [];
+    for (let i = 0; i < arr.length; i += 5) {
+      rows.push(arr.slice(i, i + 5));
+    }
+    return rows;
+  };
+
+  const listingsRows = chunkRows(listings);
+  const pendingRows = chunkRows(pending);
+  const occupiedRows = chunkRows(occupied);
 
   return (
     <div className="home-container">
@@ -27,17 +46,63 @@ const Home = ({ onNavigateToBHDetails, onNavigate }) => {
           <span className="text-gray">easy</span><span className="text-blue">, living</span><br />
           <span className="text-blue">made better</span>
         </h1>
+
+        {/* Listings Section */}
         <p className="home-hero-subtitle">Boarding Houses</p>
-        
-        <div className="boarding-cards-container">
-          {boardingHouses.map((house) => (
-            <div key={house.id} className="boarding-card" onClick={onNavigateToBHDetails}>
-              <div className="boarding-card-image"></div>
-              <h3 className="boarding-card-name">{house.name}</h3>
-              <p className="boarding-card-address">{house.address}</p>
-            </div>
-          ))}
-        </div>
+        { (showAllListings ? listingsRows : listingsRows.slice(0, 1)).map((row, rowIdx) => (
+          <div className="boarding-cards-row" key={rowIdx}>
+            {row.map((house) => (
+              <div key={house.id} className="boarding-card" onClick={onNavigateToBHDetails}>
+                <div className="boarding-card-image"></div>
+                <h3 className="boarding-card-name">{house.name}</h3>
+                <p className="boarding-card-address">{house.address}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+        {listings.length > 5 && (
+          <button className="see-all-btn" onClick={() => setShowAllListings((v) => !v)}>
+            {showAllListings ? 'Show Less' : 'See All'}
+          </button>
+        )}
+
+        {/* Pending Section */}
+        <p className="home-hero-subtitle">Pending</p>
+        { (showAllPending ? pendingRows : pendingRows.slice(0, 1)).map((row, rowIdx) => (
+          <div className="boarding-cards-row" key={rowIdx}>
+            {row.map((house) => (
+              <div key={house.id} className="boarding-card" onClick={onNavigateToBHDetails}>
+                <div className="boarding-card-image"></div>
+                <h3 className="boarding-card-name">{house.name}</h3>
+                <p className="boarding-card-address">{house.address}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+        {pending.length > 5 && (
+          <button className="see-all-btn" onClick={() => setShowAllPending((v) => !v)}>
+            {showAllPending ? 'Show Less' : 'See All'}
+          </button>
+        )}
+
+        {/* Occupied Section */}
+        <p className="home-hero-subtitle">Occupied</p>
+        { (showAllOccupied ? occupiedRows : occupiedRows.slice(0, 1)).map((row, rowIdx) => (
+          <div className="boarding-cards-row" key={rowIdx}>
+            {row.map((house) => (
+              <div key={house.id} className="boarding-card" onClick={onNavigateToBHDetails}>
+                <div className="boarding-card-image"></div>
+                <h3 className="boarding-card-name">{house.name}</h3>
+                <p className="boarding-card-address">{house.address}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+        {occupied.length > 5 && (
+          <button className="see-all-btn" onClick={() => setShowAllOccupied((v) => !v)}>
+            {showAllOccupied ? 'Show Less' : 'See All'}
+          </button>
+        )}
       </div>
     </div>
   );

@@ -277,10 +277,36 @@
 
 .amenities-container {
   display: flex;
-  flex-direction: column;
-  gap: 30px;
+  flex-direction: row;
+  gap: 0;
+  align-items: stretch;
+  position: relative;
+}
+
+.amenities-container .amenities-section {
   flex: 1;
-  overflow-y: auto;
+  padding: 0 24px;
+}
+
+.amenities-container .amenities-section:first-child {
+  padding-left: 0;
+  padding-right: 24px;
+}
+.amenities-container .amenities-section:last-child {
+  padding-right: 0;
+  padding-left: 24px;
+}
+
+.amenities-container::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e5e7eb;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
 .amenities-section {
@@ -296,7 +322,7 @@
 
 .amenities-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 

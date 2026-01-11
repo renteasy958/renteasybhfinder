@@ -4,7 +4,7 @@ import { auth, db } from '../../firebase/config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
-const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome }) => {
+const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onNavigateToAdmin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,28 +16,20 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome }) =
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('=== LOGIN FORM SUBMITTED ===');
-    console.log('Email:', email);
-    console.log('Password:', password);
     setError('');
-    
+    // Hardcoded admin login
+    if (email === 'renteasy@gmail.com' && password === 'renteasy') {
+      localStorage.setItem('userData', JSON.stringify({ userType: 'admin', email }));
+      onNavigateToAdmin();
+      return;
+    }
     try {
+      // ...existing code for Firebase login...
       console.log('Attempting Firebase login...');
-      // Sign in with Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Login successful, user:', userCredential.user);
-      
-      // Get user document from Firestore to check userType
-      console.log('Fetching user document from Firestore...');
       const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-      console.log('Firestore fetch complete');
-      console.log('User doc exists:', userDoc.exists());
-      
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        console.log('User logged in:', userData);
-        
-        // Save user data to localStorage for profile page
         const userDataForStorage = {
           userType: userData.userType,
           firstName: userData.firstName,
@@ -55,24 +47,17 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome }) =
           email: userData.email
         };
         localStorage.setItem('userData', JSON.stringify(userDataForStorage));
-        
-        // Redirect based on userType
-        console.log('User type:', userData.userType);
-        if (userData.userType === 'landlord') {
-          console.log('Redirecting to landlord home...');
+        if (userData.userType === 'admin') {
+          onNavigateToAdmin();
+        } else if (userData.userType === 'landlord') {
           onNavigateToLLHome();
         } else {
-          console.log('Redirecting to tenant home...');
           onNavigateToHome();
         }
       } else {
-        console.log('User data not found in Firestore');
         setError('User data not found');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
       setError('Invalid email or password');
     }
   };

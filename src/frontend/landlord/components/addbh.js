@@ -266,26 +266,53 @@ const AddBH = ({ onNavigate }) => {
                   </div>
 
                   <div className="form-group">
-                    <label>Type of Boarding House</label>
-                    <select name="type" value={formData.type} onChange={handleInputChange}>
-                      <option value="">Select Type</option>
-                      <option value="Bed Spacer">Bed Spacer</option>
-                      <option value="Single Room">Single Room</option>
-                      <option value="Shared Room (2-4 pax)">Shared Room (2-4 pax)</option>
-                      <option value="Shared Room (5-8 pax)">Shared Room (5-8 pax)</option>
-                      <option value="Apartment Type">Apartment Type</option>
-                      <option value="Family">Family</option>
-                    </select>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <label>Type of Boarding House</label>
+                        <select name="type" value={formData.type} onChange={handleInputChange}>
+                          <option value="">Select Type</option>
+                          <option value="Bed Spacer">Bed Spacer</option>
+                          <option value="Single Room">Single Room</option>
+                          <option value="Shared Room (2-4 pax)">Shared Room (2-4 pax)</option>
+                          <option value="Shared Room (5-8 pax)">Shared Room (5-8 pax)</option>
+                          <option value="Apartment Type">Apartment Type</option>
+                          <option value="Family">Family</option>
+                        </select>
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <label>Quantity</label>
+                        <input
+                          type="number"
+                          name="quantity"
+                          value={formData.quantity || ''}
+                          onChange={handleInputChange}
+                          placeholder="Quantity"
+                          min="1"
+                        />
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <label>Price</label>
+                        <input
+                          type="number"
+                          name="price"
+                          value={formData.price}
+                          onChange={handleInputChange}
+                          placeholder="Enter price"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="form-group">
-                    <label>Price</label>
-                    <input
-                      type="number"
-                      name="price"
-                      value={formData.price}
+                    <label>Description</label>
+                    <textarea
+                      name="description"
+                      value={formData.description || ''}
                       onChange={handleInputChange}
-                      placeholder="Enter price"
+                      placeholder="Enter a short description of the boarding house"
+                      rows={3}
+                      className="input description-input"
+                      style={{ resize: 'none', padding: '10px', borderRadius: '6px', border: '1px solid #d1d5db', fontFamily: 'inherit', fontSize: '15px' }}
                     />
                   </div>
                 </div>
@@ -300,8 +327,8 @@ const AddBH = ({ onNavigate }) => {
 
         {currentStep === 2 && (
           <div className="form-section">
-            <div className="amenities-container">
-              <div className="amenities-section">
+            <div className="amenities-container" style={{ display: 'flex', gap: '0', alignItems: 'stretch', position: 'relative' }}>
+              <div className="amenities-section" style={{ flex: 1, paddingRight: '24px' }}>
                 <h3>Included in Monthly Payment</h3>
                 <div className="amenities-grid">
                   {amenitiesList.map((amenity) => (
@@ -319,8 +346,8 @@ const AddBH = ({ onNavigate }) => {
                   ))}
                 </div>
               </div>
-
-              <div className="amenities-section">
+              <div style={{ width: '2px', background: '#e5e7eb', height: 'auto', margin: '0 0', alignSelf: 'stretch' }}></div>
+              <div className="amenities-section" style={{ flex: 1, paddingLeft: '24px' }}>
                 <h3>Excluded in Monthly Payment</h3>
                 <div className="amenities-grid">
                   {amenitiesList.map((amenity) => (
@@ -339,7 +366,6 @@ const AddBH = ({ onNavigate }) => {
                 </div>
               </div>
             </div>
-
             <div className="form-navigation">
               <button className="back-button" onClick={() => setCurrentStep(1)}>Back</button>
               <button className="next-button" onClick={() => setCurrentStep(3)}>Next</button>
@@ -371,13 +397,7 @@ const AddBH = ({ onNavigate }) => {
                   {location && <Marker position={[location.lat, location.lng]} />}
                 </MapContainer>
               </div>
-              {location && (
-                <div className="location-info">
-                  <p><strong>Selected Location:</strong></p>
-                  <p>Latitude: {location.lat.toFixed(6)}</p>
-                  <p>Longitude: {location.lng.toFixed(6)}</p>
-                </div>
-              )}
+              {/* Removed Selected Location display as requested */}
             </div>
 
             <div className="form-navigation">
