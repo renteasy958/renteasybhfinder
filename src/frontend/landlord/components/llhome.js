@@ -5,99 +5,11 @@ import LLNavbar from './llnavbar';
 const LLHome = ({ onNavigate }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBH, setSelectedBH] = useState(null);
+  const [showAllListings, setShowAllListings] = useState(false);
+  const [showAllPending, setShowAllPending] = useState(false);
+  const [showAllOccupied, setShowAllOccupied] = useState(false);
 
-  const boardingHouses = [
-    {
-      id: 1,
-      name: 'Boarding House 1',
-      type: 'Male Dorm',
-      price: '₱3,500/month',
-      address: '123 Main St, Barangay Centro, City',
-      images: ['image1.jpg', 'image2.jpg', 'image3.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Bed', 'Study Table'],
-      excludedAmenities: ['Air Conditioning', 'Laundry Service', 'Meals']
-    },
-    {
-      id: 2,
-      name: 'Boarding House 2',
-      type: 'Female Dorm',
-      price: '₱4,000/month',
-      address: '456 Oak Ave, Barangay San Jose, City',
-      images: ['image1.jpg', 'image2.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Air Conditioning', 'Bed'],
-      excludedAmenities: ['Laundry Service', 'Meals', 'Parking']
-    },
-    {
-      id: 3,
-      name: 'Boarding House 3',
-      type: 'Co-ed',
-      price: '₱3,800/month',
-      address: '789 Pine Rd, Barangay Poblacion, City',
-      images: ['image1.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Bed', 'Study Table', 'Kitchen Access'],
-      excludedAmenities: ['Air Conditioning', 'Parking']
-    },
-    {
-      id: 4,
-      name: 'Boarding House 4',
-      type: 'Male Dorm',
-      price: '₱3,200/month',
-      address: '321 Elm St, Barangay Santa Cruz, City',
-      images: ['image1.jpg', 'image2.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Bed'],
-      excludedAmenities: ['Air Conditioning', 'Laundry Service', 'Meals', 'Study Table']
-    },
-    {
-      id: 5,
-      name: 'Boarding House 5',
-      type: 'Female Dorm',
-      price: '₱4,500/month',
-      address: '654 Maple Dr, Barangay San Pedro, City',
-      images: ['image1.jpg', 'image2.jpg', 'image3.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Air Conditioning', 'Bed', 'Study Table', 'Laundry Service'],
-      excludedAmenities: ['Meals', 'Parking']
-    },
-    {
-      id: 6,
-      name: 'Boarding House 6',
-      type: 'Co-ed',
-      price: '₱3,600/month',
-      address: '987 Cedar Ln, Barangay San Antonio, City',
-      images: ['image1.jpg', 'image2.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Bed', 'Kitchen Access'],
-      excludedAmenities: ['Air Conditioning', 'Laundry Service', 'Meals']
-    },
-    {
-      id: 7,
-      name: 'Boarding House 7',
-      type: 'Male Dorm',
-      price: '₱3,900/month',
-      address: '147 Birch St, Barangay San Miguel, City',
-      images: ['image1.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Air Conditioning', 'Bed', 'Study Table'],
-      excludedAmenities: ['Laundry Service', 'Meals', 'Kitchen Access']
-    },
-    {
-      id: 8,
-      name: 'Boarding House 8',
-      type: 'Female Dorm',
-      price: '₱4,200/month',
-      address: '258 Willow Ave, Barangay San Juan, City',
-      images: ['image1.jpg', 'image2.jpg', 'image3.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Air Conditioning', 'Bed', 'Laundry Service'],
-      excludedAmenities: ['Meals', 'Parking', 'Kitchen Access']
-    },
-    {
-      id: 9,
-      name: 'Boarding House 9',
-      type: 'Co-ed',
-      price: '₱3,700/month',
-      address: '369 Spruce Ct, Barangay San Rafael, City',
-      images: ['image1.jpg', 'image2.jpg'],
-      includedAmenities: ['WiFi', 'Water', 'Electricity', 'Bed', 'Study Table', 'Parking'],
-      excludedAmenities: ['Air Conditioning', 'Laundry Service', 'Meals']
-    }
-  ];
+  const boardingHouses = [];
 
   const handleCardClick = (bh) => {
     setSelectedBH(bh);
@@ -109,59 +21,119 @@ const LLHome = ({ onNavigate }) => {
     setSelectedBH(null);
   };
 
+  // Example sections, you may want to filter by status in real app
+  const listings = boardingHouses.slice(0, 6); // Example: first 6 as listings
+  const pending = boardingHouses.slice(6, 8); // Example: next 2 as pending
+  const occupied = boardingHouses.slice(8);   // Example: rest as occupied
+
   return (
     <div className="llhome-container">
       <LLNavbar onNavigate={onNavigate} />
       <div className="llhome-content">
         <div className="stats-container">
+          {/* Listings Section */}
           <div className="stat-card">
             <div className="stat-header">
               <div className="stat-label">Listings</div>
               <button className="add-bh-button" onClick={() => onNavigate('addbh')}>+ Add Boarding House</button>
+              {listings.length > 5 && (
+                <button className="see-all-btn" onClick={() => setShowAllListings((v) => !v)}>
+                  {showAllListings ? 'Show Less' : 'See All'}
+                </button>
+              )}
             </div>
             <div className="card-items-container">
-              {boardingHouses.slice(0, 3).map((bh) => (
-                <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                  <div className="card-image-container"></div>
-                  <div className="card-content">
-                    <div className="card-name">{bh.name}</div>
-                    <div className="card-type">{bh.type}</div>
-                    <div className="card-price">{bh.price}</div>
+              {(() => {
+                const arr = showAllListings ? listings : listings.slice(0, 10);
+                const rows = [];
+                for (let i = 0; i < arr.length; i += 5) {
+                  rows.push(arr.slice(i, i + 5));
+                }
+                return rows.map((row, idx) => (
+                  <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+                    {row.slice(0, 5).map((bh) => (
+                      <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
+                        <div className="card-image-container"></div>
+                        <div className="card-content">
+                          <div className="card-name">{bh.name}</div>
+                          <div className="card-type">{bh.type}</div>
+                          <div className="card-price">{bh.price}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
           </div>
-          
+
+          {/* Pending Section */}
           <div className="stat-card">
-            <div className="stat-label">Pending</div>
+            <div className="stat-header">
+              <div className="stat-label">Pending</div>
+              {pending.length > 5 && (
+                <button className="see-all-btn" onClick={() => setShowAllPending((v) => !v)}>
+                  {showAllPending ? 'Show Less' : 'See All'}
+                </button>
+              )}
+            </div>
             <div className="card-items-container">
-              {boardingHouses.slice(3, 5).map((bh) => (
-                <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                  <div className="card-image-container"></div>
-                  <div className="card-content">
-                    <div className="card-name">{bh.name}</div>
-                    <div className="card-type">{bh.type}</div>
-                    <div className="card-price">{bh.price}</div>
+              {(() => {
+                const arr = showAllPending ? pending : pending.slice(0, 10);
+                const rows = [];
+                for (let i = 0; i < arr.length; i += 5) {
+                  rows.push(arr.slice(i, i + 5));
+                }
+                return rows.map((row, idx) => (
+                  <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+                    {row.slice(0, 5).map((bh) => (
+                      <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
+                        <div className="card-image-container"></div>
+                        <div className="card-content">
+                          <div className="card-name">{bh.name}</div>
+                          <div className="card-type">{bh.type}</div>
+                          <div className="card-price">{bh.price}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
           </div>
-          
+
+          {/* Occupied Section */}
           <div className="stat-card">
-            <div className="stat-label">Occupied</div>
+            <div className="stat-header">
+              <div className="stat-label">Occupied</div>
+              {occupied.length > 5 && (
+                <button className="see-all-btn" onClick={() => setShowAllOccupied((v) => !v)}>
+                  {showAllOccupied ? 'Show Less' : 'See All'}
+                </button>
+              )}
+            </div>
             <div className="card-items-container">
-              {boardingHouses.slice(5, 9).map((bh) => (
-                <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                  <div className="card-image-container"></div>
-                  <div className="card-content">
-                    <div className="card-name">{bh.name}</div>
-                    <div className="card-type">{bh.type}</div>
-                    <div className="card-price">{bh.price}</div>
+              {(() => {
+                const arr = showAllOccupied ? occupied : occupied.slice(0, 10);
+                const rows = [];
+                for (let i = 0; i < arr.length; i += 5) {
+                  rows.push(arr.slice(i, i + 5));
+                }
+                return rows.map((row, idx) => (
+                  <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+                    {row.slice(0, 5).map((bh) => (
+                      <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
+                        <div className="card-image-container"></div>
+                        <div className="card-content">
+                          <div className="card-name">{bh.name}</div>
+                          <div className="card-type">{bh.type}</div>
+                          <div className="card-price">{bh.price}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
           </div>
         </div>

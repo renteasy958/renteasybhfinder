@@ -39,21 +39,46 @@
   margin-bottom: 20px;
 }
 
-.boarding-cards-container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+
+/* Container for each row of 5 cards */
+.boarding-cards-row {
+  display: flex;
+  flex-direction: row;
   gap: 15px;
   margin-top: 20px;
   width: 100%;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+/* Remove old grid container, but keep for mobile below */
+.boarding-cards-container {
+  display: none;
+}
+/* See All/Show Less button styling */
+.see-all-btn {
+  margin-top: 18px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 600;
+  outline: none;
+  transition: color 0.2s;
+}
+.see-all-btn:hover {
+  color: #012e6a;
 }
 
 .boarding-card {
   background: white;
   border-radius: 12px;
-  padding: 15px;
-  width: 260px;
-  min-width: 260px;
-  min-height: 320px;
+  padding: 12px;
+  width: 230px;
+  min-width: 230px;
+  min-height: 280px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
@@ -66,7 +91,7 @@
 
 .boarding-card-image {
   width: 100%;
-  height: 200px;
+  height: 170px;
   background-color: #e5e7eb;
   border-radius: 8px;
   margin-bottom: 12px;
@@ -134,8 +159,8 @@
     margin-top: 40px;
   }
 
-  .boarding-cards-container {
-    grid-template-columns: repeat(2, 1fr);
+  .boarding-cards-row {
+    flex-direction: column;
     gap: 12px;
   }
 
