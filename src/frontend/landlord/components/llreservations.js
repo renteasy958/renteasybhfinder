@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import LLVerify from './llverify';
 import '../styles/llreservations.css';
 import LLNavbar from './llnavbar';
 
 const LLReservations = ({ onNavigate }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   const reservations = [
     { 
@@ -66,7 +68,8 @@ const LLReservations = ({ onNavigate }) => {
 
   return (
     <div className="llreservations-container">
-      <LLNavbar onNavigate={onNavigate} />
+      <LLNavbar onNavigate={onNavigate} onShowVerifyModal={() => setShowVerifyModal(true)} />
+      <LLVerify show={showVerifyModal} onClose={() => setShowVerifyModal(false)} />
       <div className="llreservations-content">
         <div className="reservations-list">
           {reservations.map((reservation) => (

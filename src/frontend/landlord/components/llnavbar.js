@@ -3,10 +3,11 @@ import '../styles/llnavbar.css';
 import { auth } from '../../../firebase/config';
 import { signOut } from 'firebase/auth';
 
-const LLNavbar = ({ onNavigate, currentPage }) => {
+const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [withdrawalData, setWithdrawalData] = useState({
     amount: '',
     gcashNumber: ''
@@ -68,7 +69,7 @@ const LLNavbar = ({ onNavigate, currentPage }) => {
               <button className="llsettings-dropdown-item" onClick={() => onNavigate('llprofile')}>
                 <span>Profile</span>
               </button>
-              <button className="llsettings-dropdown-item" onClick={() => onNavigate('llverify')}>
+              <button className="llsettings-dropdown-item" onClick={onShowVerifyModal}>
                 <span>Verify Account</span>
               </button>
               <button className="llsettings-dropdown-item" onClick={handleLogout}>

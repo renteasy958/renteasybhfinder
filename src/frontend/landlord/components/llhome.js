@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import LLVerify from './llverify';
 import '../styles/llhome.css';
 import LLNavbar from './llnavbar';
 
@@ -8,6 +9,7 @@ const LLHome = ({ onNavigate }) => {
   const [showAllListings, setShowAllListings] = useState(false);
   const [showAllPending, setShowAllPending] = useState(false);
   const [showAllOccupied, setShowAllOccupied] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   // Sample data for demonstration
   // 10 listings, 10 pending, 10 occupied
@@ -64,7 +66,8 @@ const LLHome = ({ onNavigate }) => {
 
   return (
     <div className="llhome-container">
-      <LLNavbar onNavigate={onNavigate} />
+      <LLNavbar onNavigate={onNavigate} onShowVerifyModal={() => setShowVerifyModal(true)} />
+      <LLVerify show={showVerifyModal} onClose={() => setShowVerifyModal(false)} />
       <div className="llhome-content">
         <div className="stats-container">
           {/* Listings Section */}

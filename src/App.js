@@ -12,16 +12,11 @@ import LLReservations from './frontend/landlord/components/llreservations';
 import AddBH from './frontend/landlord/components/addbh';
 import LLHistory from './frontend/landlord/components/llhistory';
 import LLProfile from './frontend/landlord/components/llprofile';
+import AdminDashboard from './frontend/admin/AdminDashboard';
 // import LLSettings from './frontend/landlord/components/llsettings';
 import History from './frontend/tenant/components/history';
 
 function getInitialPage() {
-  const userData = JSON.parse(localStorage.getItem('userData') || 'null');
-  if (!userData) return 'login';
-  if (userData.lastPage) return userData.lastPage;
-  if (userData.userType === 'admin') return 'admindashboard';
-  if (userData.userType === 'landlord') return 'llhome';
-  if (userData.userType === 'tenant') return 'home';
   return 'login';
 }
 
@@ -57,6 +52,7 @@ function App() {
       {/* No settings page, handled in navbar dropdown. Removed all LLSettings references. */}
       {currentPage === 'llprofile' && <LLProfile onNavigate={(page) => setCurrentPage(page)} />}
       {/* LLVerifyModal removed */}
+      {currentPage === 'admindashboard' && <AdminDashboard />}
     </div>
   );
 }

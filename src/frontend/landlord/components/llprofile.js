@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/llprofile.css';
 import LLNavbar from './llnavbar';
+import LLVerify from './llverify';
 
 const LLProfile = ({ onNavigate }) => {
   const [userData, setUserData] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -50,20 +52,34 @@ const LLProfile = ({ onNavigate }) => {
     }
   };
 
+
   if (!userData) {
     return (
       <div className="profile-container">
-        <LLNavbar onNavigate={onNavigate} />
+        <LLNavbar onNavigate={onNavigate} onShowVerifyModal={() => setShowVerifyModal(true)} />
         <div className="profile-content">
           <p className="profile-loading">Loading profile...</p>
         </div>
+        {showVerifyModal && (
+          <div className="modal-overlay" onClick={() => setShowVerifyModal(false)}>
+            <div className="modal-content-llverify" onClick={e => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowVerifyModal(false)}>×</button>
+              <h2 className="modal-title">Verify Account</h2>
+              <div style={{ textAlign: 'center', padding: 24 }}>
+                <p>Verification instructions or form goes here.</p>
+                <button className="approve-button" onClick={() => setShowVerifyModal(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div className="profile-container">
-      <LLNavbar onNavigate={onNavigate} />
+      <LLNavbar onNavigate={onNavigate} onShowVerifyModal={() => setShowVerifyModal(true)} />
+      <LLVerify show={showVerifyModal} onClose={() => setShowVerifyModal(false)} />
       <div className="profile-content">
         <div className="profile-header">
           <div className="profile-avatar" onClick={handleProfilePictureClick}>
