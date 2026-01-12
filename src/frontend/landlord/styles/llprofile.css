@@ -1,0 +1,4 @@
+/* Landlord profile styles, based on tenant profile */
+@import '../../tenant/styles/profile.css';
+
+/* You can override or add landlord-specific styles below if needed */

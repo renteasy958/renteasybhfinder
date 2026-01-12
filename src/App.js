@@ -1,5 +1,3 @@
-import AdminDashboard from './frontend/admin/AdminDashboard';
-
 import React, { useState } from 'react';
 import './App.css';
 import Login from './frontend/login/login';
@@ -13,11 +11,14 @@ import LLHome from './frontend/landlord/components/llhome';
 import LLReservations from './frontend/landlord/components/llreservations';
 import AddBH from './frontend/landlord/components/addbh';
 import LLHistory from './frontend/landlord/components/llhistory';
+import LLProfile from './frontend/landlord/components/llprofile';
+// import LLSettings from './frontend/landlord/components/llsettings';
 import History from './frontend/tenant/components/history';
 
 function getInitialPage() {
   const userData = JSON.parse(localStorage.getItem('userData') || 'null');
   if (!userData) return 'login';
+  if (userData.lastPage) return userData.lastPage;
   if (userData.userType === 'admin') return 'admindashboard';
   if (userData.userType === 'landlord') return 'llhome';
   if (userData.userType === 'tenant') return 'home';
@@ -27,19 +28,14 @@ function getInitialPage() {
 function App() {
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const [searchResults, setSearchResults] = useState([]);
+  // const [showLLVerifyModal, setShowLLVerifyModal] = useState(false);
 
   // Keep currentPage in sync with user type for refresh persistence
   React.useEffect(() => {
-    if (
-      currentPage === 'admindashboard' ||
-      currentPage === 'llhome' ||
-      currentPage === 'home'
-    ) {
-      const userData = JSON.parse(localStorage.getItem('userData') || 'null');
-      if (userData) {
-        userData.lastPage = currentPage;
-        localStorage.setItem('userData', JSON.stringify(userData));
-      }
+    const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+    if (userData) {
+      userData.lastPage = currentPage;
+      localStorage.setItem('userData', JSON.stringify(userData));
     }
   }, [currentPage]);
 
@@ -56,8 +52,11 @@ function App() {
       {currentPage === 'llreservations' && <LLReservations onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'addbh' && <AddBH onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'llhistory' && <LLHistory onNavigate={(page) => setCurrentPage(page)} />}
+      {/* Removed LLSettings and llverify modal navigation, handled in navbar dropdown */}
       {currentPage === 'history' && <History onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
-      {currentPage === 'admindashboard' && <AdminDashboard />}
+      {/* No settings page, handled in navbar dropdown. Removed all LLSettings references. */}
+      {currentPage === 'llprofile' && <LLProfile onNavigate={(page) => setCurrentPage(page)} />}
+      {/* LLVerifyModal removed */}
     </div>
   );
 }
