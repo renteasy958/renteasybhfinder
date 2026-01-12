@@ -72,7 +72,11 @@ const LLHome = ({ onNavigate }) => {
                   <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
                     {row.slice(0, 5).map((bh) => (
                       <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                        <div className="card-image-container"></div>
+                        <div className="card-image-container">
+                          {bh.images && bh.images.length > 0 && (
+                            <img src={bh.images[0]} alt="Boarding House" className="card-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          )}
+                        </div>
                         <div className="card-content">
                           <div className="card-name">{bh.name}</div>
                           <div className="card-type">{bh.type}</div>
@@ -98,7 +102,11 @@ const LLHome = ({ onNavigate }) => {
               ) : (
                 pending.map((bh) => (
                   <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                    <div className="card-image-container"></div>
+                    <div className="card-image-container">
+                      {bh.images && bh.images.length > 0 && (
+                        <img src={bh.images[0]} alt="Boarding House" className="card-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      )}
+                    </div>
                     <div className="card-content">
                       <div className="card-name">{bh.name}</div>
                       <div className="card-type">{bh.type}</div>
@@ -131,7 +139,11 @@ const LLHome = ({ onNavigate }) => {
                   <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
                     {row.slice(0, 5).map((bh) => (
                       <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                        <div className="card-image-container"></div>
+                        <div className="card-image-container">
+                          {bh.images && bh.images.length > 0 && (
+                            <img src={bh.images[0]} alt="Boarding House" className="card-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          )}
+                        </div>
                         <div className="card-content">
                           <div className="card-name">{bh.name}</div>
                           <div className="card-type">{bh.type}</div>

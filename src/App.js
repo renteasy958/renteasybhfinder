@@ -17,6 +17,12 @@ import AdminDashboard from './frontend/admin/AdminDashboard';
 import History from './frontend/tenant/components/history';
 
 function getInitialPage() {
+  const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+  if (userData && userData.userType) {
+    if (userData.userType === 'admin') return 'admindashboard';
+    if (userData.userType === 'landlord') return 'llhome';
+    if (userData.userType === 'tenant') return 'home';
+  }
   return 'login';
 }
 
