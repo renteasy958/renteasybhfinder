@@ -3,7 +3,7 @@ import '../styles/llnavbar.css';
 import { auth } from '../../../firebase/config';
 import { signOut } from 'firebase/auth';
 
-const LLNavbar = ({ onNavigate }) => {
+const LLNavbar = ({ onNavigate, currentPage }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -59,10 +59,10 @@ const LLNavbar = ({ onNavigate }) => {
       </div>
 
       <div className="llnavbar-center-links">
-        <button onClick={() => onNavigate('llhome')} className="llnavbar-center-link">Home</button>
-        <button onClick={() => onNavigate('llreservations')} className="llnavbar-center-link">Reservations</button>
+        <button onClick={() => onNavigate('llhome')} className={`llnavbar-center-link${currentPage === 'llhome' ? ' llnavbar-center-link-active' : ''}`}>Home</button>
+        <button onClick={() => onNavigate('llreservations')} className={`llnavbar-center-link${currentPage === 'llreservations' ? ' llnavbar-center-link-active' : ''}`}>Reservations</button>
         <div className="llsettings-dropdown" ref={settingsRef}>
-          <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="llnavbar-center-link">Settings</button>
+          <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className={`llnavbar-center-link${currentPage === 'llprofile' ? ' llnavbar-center-link-active' : ''}`}>Settings</button>
           {isSettingsOpen && (
             <div className="llsettings-dropdown-menu">
               <button className="llsettings-dropdown-item" onClick={() => onNavigate('llprofile')}>
@@ -77,7 +77,7 @@ const LLNavbar = ({ onNavigate }) => {
             </div>
           )}
         </div>
-        <button onClick={() => onNavigate('llhistory')} className="llnavbar-center-link">History</button>
+        <button onClick={() => onNavigate('llhistory')} className={`llnavbar-center-link${currentPage === 'llhistory' ? ' llnavbar-center-link-active' : ''}`}>History</button>
       </div>
 
       <div className="llnavbar-balance" onClick={() => setShowWithdrawalModal(true)}>

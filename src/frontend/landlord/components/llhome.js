@@ -9,7 +9,43 @@ const LLHome = ({ onNavigate }) => {
   const [showAllPending, setShowAllPending] = useState(false);
   const [showAllOccupied, setShowAllOccupied] = useState(false);
 
-  const boardingHouses = [];
+  // Sample data for demonstration
+  // 10 listings, 10 pending, 10 occupied
+  const boardingHouses = [
+    // Listings (id: 1-10)
+    ...Array.from({ length: 10 }, (_, i) => ({
+      id: i + 1,
+      name: `Listing House ${i + 1}`,
+      type: ['Dormitory', 'Apartment', 'Studio'][i % 3],
+      price: `₱${3500 + i * 200}/mo`,
+      address: `${100 + i} Main St, City`,
+      images: [`/images/listing${i + 1}a.jpg`],
+      includedAmenities: ['WiFi', 'Water', 'Electricity'].slice(0, (i % 3) + 1),
+      excludedAmenities: ['Laundry', 'Parking'].slice(0, (i % 2) + 1),
+    })),
+    // Pending (id: 11-20)
+    ...Array.from({ length: 10 }, (_, i) => ({
+      id: i + 11,
+      name: `Pending House ${i + 1}`,
+      type: ['Dormitory', 'Apartment', 'Studio'][i % 3],
+      price: `₱${3600 + i * 150}/mo`,
+      address: `${200 + i} Pending Rd, City`,
+      images: [`/images/pending${i + 1}a.jpg`],
+      includedAmenities: ['WiFi', 'Parking', 'Laundry'].slice(0, (i % 3) + 1),
+      excludedAmenities: ['Water', 'Electricity'].slice(0, (i % 2) + 1),
+    })),
+    // Occupied (id: 21-30)
+    ...Array.from({ length: 10 }, (_, i) => ({
+      id: i + 21,
+      name: `Occupied House ${i + 1}`,
+      type: ['Dormitory', 'Apartment', 'Studio'][i % 3],
+      price: `₱${3700 + i * 180}/mo`,
+      address: `${300 + i} Occupied St, City`,
+      images: [`/images/occupied${i + 1}a.jpg`],
+      includedAmenities: ['Water', 'Electricity', 'Laundry'].slice(0, (i % 3) + 1),
+      excludedAmenities: ['WiFi', 'Parking'].slice(0, (i % 2) + 1),
+    })),
+  ];
 
   const handleCardClick = (bh) => {
     setSelectedBH(bh);
@@ -22,9 +58,9 @@ const LLHome = ({ onNavigate }) => {
   };
 
   // Example sections, you may want to filter by status in real app
-  const listings = boardingHouses.slice(0, 6); // Example: first 6 as listings
-  const pending = boardingHouses.slice(6, 8); // Example: next 2 as pending
-  const occupied = boardingHouses.slice(8);   // Example: rest as occupied
+  const listings = boardingHouses.slice(0, 10); // First 10 as listings
+  const pending = boardingHouses.slice(10, 20); // Next 10 as pending
+  const occupied = boardingHouses.slice(20, 30); // Next 10 as occupied
 
   return (
     <div className="llhome-container">
@@ -35,12 +71,14 @@ const LLHome = ({ onNavigate }) => {
           <div className="stat-card">
             <div className="stat-header">
               <div className="stat-label">Listings</div>
-              <button className="add-bh-button" onClick={() => onNavigate('addbh')}>+ Add Boarding House</button>
-              {listings.length > 5 && (
-                <button className="see-all-btn" onClick={() => setShowAllListings((v) => !v)}>
-                  {showAllListings ? 'Show Less' : 'See All'}
-                </button>
-              )}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                {listings.length > 5 && (
+                  <button className="see-all-btn" onClick={() => setShowAllListings((v) => !v)}>
+                    {showAllListings ? 'Show Less' : 'See All'}
+                  </button>
+                )}
+                <button className="add-bh-button" onClick={() => onNavigate('addbh')}>+ Add Boarding House</button>
+              </div>
             </div>
             <div className="card-items-container">
               {(() => {

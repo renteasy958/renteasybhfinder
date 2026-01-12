@@ -7,27 +7,25 @@ import '../styles/history.css';
 import '../styles/llhistory.css';
 
 
-const History = ({ onNavigate }) => {
-  const historyData = [
-    { id: 1, action: 'Reservation', date: '2025-12-01', status: 'Completed' },
-    { id: 2, action: 'Viewed', date: '2025-11-15', status: 'Completed' },
-    { id: 3, action: 'Request Refund', date: '2025-12-10', status: 'Pending' },
-    { id: 4, action: 'Reservation', date: '2025-12-20', status: 'Pending' },
-  ];
+const historyData = [
+  { id: 1, transaction: 'Reservation', date: '2025-12-01', amount: '₱1,200.00', status: 'Completed' },
+  { id: 2, transaction: 'Refund', date: '2025-12-10', amount: '₱500.00', status: 'Pending' },
+  { id: 3, transaction: 'Reservation', date: '2025-12-20', amount: '₱1,500.00', status: 'Pending' },
+];
 
+const History = ({ onNavigate, currentPage }) => {
   return (
-    <div className="llreservations-container">
-      <Navbar onNavigate={onNavigate} />
-      <div className="llreservations-content">
-        <div className="reservations-list">
-          {historyData.map((item) => (
-            <div key={item.id} className="reservation-card" style={{paddingTop: '18px', paddingBottom: '18px'}}>
-              <span style={{ fontWeight: 600, color: '#2563eb', fontSize: '16px', marginRight: 24, minWidth: 120, display: 'inline-block' }}>{item.action}</span>
-              <span style={{ color: '#6b7280', fontSize: '15px', marginRight: 24, minWidth: 110, display: 'inline-block' }}>{item.date}</span>
-              <span style={{ color: item.status === 'Pending' ? '#ef4444' : '#22c55e', fontWeight: 600, fontSize: '15px', minWidth: 100, display: 'inline-block' }}>{item.status}</span>
-            </div>
-          ))}
-        </div>
+    <div className="tenant-page transaction-history-page">
+      <Navbar onNavigate={onNavigate} currentPage={currentPage || "history"} />
+      <div className="tenant-cards-list">
+        {historyData.map((item) => (
+          <div key={item.id} className="tenant-card">
+            <span className="tenant-card-title">{item.transaction}</span>
+            <span className="tenant-card-date">{item.date}</span>
+            {item.amount && <span className="tenant-card-amount">{item.amount}</span>}
+            <span className={item.status === 'Pending' ? 'tenant-card-status pending' : 'tenant-card-status completed'}>{item.status}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

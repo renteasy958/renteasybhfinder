@@ -1,3 +1,7 @@
+.llnavbar-center-link-active {
+  border-bottom: 3px solid #fff;
+  color: #fff;
+}
 .llnavbar-container {
   position: fixed;
   top: 0;

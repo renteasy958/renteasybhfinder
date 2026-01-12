@@ -3,9 +3,21 @@ import '../styles/navbar.css';
 import { auth } from '../../../firebase/config';
 import { signOut } from 'firebase/auth';
 
-const Navbar = ({ onNavigate, onSettingsClick }) => {
+const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filter, setFilter] = useState({
+    type: '',
+    location: '',
+    price: ''
+  });
+  const [pendingFilter, setPendingFilter] = useState({
+    type: '',
+    location: '',
+    price: ''
+  });
   const settingsRef = useRef(null);
+  const filterRef = useRef(null);
 
   const handleLogout = async () => {
     try {
@@ -24,25 +36,43 @@ const Navbar = ({ onNavigate, onSettingsClick }) => {
       if (settingsRef.current && !settingsRef.current.contains(event.target)) {
         setIsSettingsOpen(false);
       }
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const [searchValue, setSearchValue] = useState('');
   return (
     <nav className="navbar-container">
       <div className="navbar-logo">
         <img src={require('../../images/logo.png')} alt="RentEasy Logo" />
       </div>
-      
-      <div className="navbar-search">
-        <input 
-          type="text" 
-          placeholder="Search boarding houses..." 
-          className="navbar-search-input"
-        />
-        <button className="navbar-filter-btn">
+      <div className="navbar-search" style={{ position: 'relative' }}>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            if (onSearch) onSearch(searchValue);
+          }}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <input
+            type="text"
+            placeholder="Search boarding houses..."
+            className="navbar-search-input"
+            value={searchValue}
+            onChange={e => setSearchValue(e.target.value)}
+            style={{ flex: 1 }}
+          />
+          <button type="submit" style={{ display: 'none' }}></button>
+        </form>
+        <button className="navbar-filter-btn" onClick={() => {
+          setPendingFilter(filter);
+          setIsFilterOpen((open) => !open);
+        }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="4" y1="6" x2="20" y2="6"/>
             <line x1="4" y1="12" x2="20" y2="12"/>
@@ -52,24 +82,150 @@ const Navbar = ({ onNavigate, onSettingsClick }) => {
             <circle cx="12" cy="18" r="2"/>
           </svg>
         </button>
+        {isFilterOpen && (
+          <div className="navbar-filter-dropdown" ref={filterRef} style={{
+            position: 'absolute',
+            top: '40px',
+            left: 'auto',
+            right: 0,
+            background: '#fff',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            zIndex: 10,
+            padding: '16px',
+            minWidth: '220px',
+            textAlign: 'left',
+          }}>
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Type:</label>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {['Bed spacer','Single Room','Shared Room (2-4 pax)','Shared Room (5-8 pax)','Apartment Type','Family'].map(option => (
+                  <li key={option} style={{ marginBottom: '4px' }}>
+                    <label style={{ cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="filter-type"
+                        value={option}
+                        checked={pendingFilter.type === option}
+                        onChange={() => setPendingFilter(f => ({ ...f, type: option }))}
+                        style={{ marginRight: '6px' }}
+                      />
+                      {option}
+                    </label>
+                  </li>
+                ))}
+                <li>
+                  <label style={{ cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="filter-type"
+                      value=""
+                      checked={pendingFilter.type === ''}
+                      onChange={() => setPendingFilter(f => ({ ...f, type: '' }))}
+                      style={{ marginRight: '6px' }}
+                    />
+                    Any
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Location:</label>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {['Barangay 1','Barangay 2','Barangay 3','Barangay 4','Barangay 5','Barangay 6','Barangay 7','Barangay 8','Barangay 9'].map(option => (
+                  <li key={option} style={{ marginBottom: '4px' }}>
+                    <label style={{ cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="filter-location"
+                        value={option}
+                        checked={pendingFilter.location === option}
+                        onChange={() => setPendingFilter(f => ({ ...f, location: option }))}
+                        style={{ marginRight: '6px' }}
+                      />
+                      {option}
+                    </label>
+                  </li>
+                ))}
+                <li>
+                  <label style={{ cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="filter-location"
+                      value=""
+                      checked={pendingFilter.location === ''}
+                      onChange={() => setPendingFilter(f => ({ ...f, location: '' }))}
+                      style={{ marginRight: '6px' }}
+                    />
+                    Any
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Price:</label>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {['500-1000','1001-2500','2501-up'].map(option => (
+                  <li key={option} style={{ marginBottom: '4px' }}>
+                    <label style={{ cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="filter-price"
+                        value={option}
+                        checked={pendingFilter.price === option}
+                        onChange={() => setPendingFilter(f => ({ ...f, price: option }))}
+                        style={{ marginRight: '6px' }}
+                      />
+                      {option}
+                    </label>
+                  </li>
+                ))}
+                <li>
+                  <label style={{ cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="filter-price"
+                      value=""
+                      checked={pendingFilter.price === ''}
+                      onChange={() => setPendingFilter(f => ({ ...f, price: '' }))}
+                      style={{ marginRight: '6px' }}
+                    />
+                    Any
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <button
+              style={{ width: '100%', padding: '8px', background: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
+              onClick={e => {
+                e.preventDefault();
+                setFilter(pendingFilter);
+                setIsFilterOpen(false);
+              }}
+            >
+              Apply Filter
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="navbar-links">
-        <button onClick={() => onNavigate('home')} className="navbar-link">
+        <button onClick={() => onNavigate('home')} className={`navbar-link${currentPage === 'home' ? ' navbar-link-active' : ''}`}> 
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
           <span className="navbar-link-text">Home</span>
         </button>
-        <button onClick={() => onNavigate('liked')} className="navbar-link">
+        <button onClick={() => onNavigate('liked')} className={`navbar-link${currentPage === 'liked' ? ' navbar-link-active' : ''}`}> 
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
           <span className="navbar-link-text">Liked</span>
         </button>
         <div className="settings-dropdown" ref={settingsRef}>
-          <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="navbar-link">
+          <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className={`navbar-link${currentPage === 'profile' ? ' navbar-link-active' : ''}`}> 
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M12 1v6m0 6v6m6-12l-4.24 4.24M10.24 13.76L6 18m12-12l-4.24 4.24M10.24 10.24L6 6"></path>
@@ -96,7 +252,7 @@ const Navbar = ({ onNavigate, onSettingsClick }) => {
             </div>
           )}
         </div>
-        <button onClick={() => onNavigate('history')} className="navbar-link">
+        <button onClick={() => onNavigate('history')} className={`navbar-link${currentPage === 'history' ? ' navbar-link-active' : ''}`}> 
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>

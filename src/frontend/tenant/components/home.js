@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../styles/home.css';
 import Navbar from './navbar';
 
-const Home = ({ onNavigateToBHDetails, onNavigate }) => {
+const Home = ({ onNavigateToBHDetails, onNavigate, onSearchResults }) => {
   // 10 samples for Boarding Houses only
   const listings = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
@@ -23,7 +23,18 @@ const Home = ({ onNavigateToBHDetails, onNavigate }) => {
 
   return (
     <div className="home-container">
-      <Navbar onNavigate={onNavigate} />
+      <Navbar
+        onNavigate={onNavigate}
+        onSearch={query => {
+          // Simple search: filter by name or address
+          const results = listings.filter(house =>
+            house.name.toLowerCase().includes(query.toLowerCase()) ||
+            house.address.toLowerCase().includes(query.toLowerCase())
+          );
+          onSearchResults(results);
+        }}
+        currentPage="home"
+      />
       <div className="home-hero">
         <h1 className="home-hero-text">
           <span className="text-gray">Boarding made</span><br />

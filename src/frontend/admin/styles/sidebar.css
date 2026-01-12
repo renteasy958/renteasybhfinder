@@ -1,3 +1,23 @@
+/* Logout button styled to blend with sidebar */
+.sidebar-logout-btn {
+  width: 100%;
+  padding: 14px 24px;
+  color: #fff;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-top: auto;
+  margin-bottom: 24px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+  transition: color 0.2s;
+}
+.sidebar-logout-btn:hover {
+  text-decoration: underline;
+  color: #fff;
+}
 .admin-sidebar {
   width: 220px;
   background: #012e6a;

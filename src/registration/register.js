@@ -6,6 +6,7 @@ import { doc, setDoc } from 'firebase/firestore';
 
 const Register = ({ onNavigateToLogin, onNavigateToHome, onNavigateToLLHome }) => {
   const [userType, setUserType] = useState('tenant');
+  const [privacyChecked, setPrivacyChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -312,7 +313,13 @@ const Register = ({ onNavigateToLogin, onNavigateToHome, onNavigateToLLHome }) =
 
             <div className="register-button-group">
               <button type="button" className="register-back-button" onClick={onNavigateToLogin}>Back to Login</button>
-              <button type="submit" className="register-submit-button">Submit</button>
+              <div className="register-privacy-group" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <label className="register-privacy-label" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+                  <input type="checkbox" checked={privacyChecked} onChange={e => setPrivacyChecked(e.target.checked)} style={{marginRight: '8px'}} />
+                  I agree to the <a href="https://www.privacy.gov.ph/data-privacy-act/" target="_blank" rel="noopener noreferrer" style={{marginLeft: '4px'}}>Data Privacy Act</a>
+                </label>
+              </div>
+              <button type="submit" className="register-submit-button" disabled={!privacyChecked}>Submit</button>
             </div>
           </form>
           </>
@@ -421,7 +428,13 @@ const Register = ({ onNavigateToLogin, onNavigateToHome, onNavigateToLLHome }) =
 
           <div className="register-button-group">
             <button type="button" className="register-back-button" onClick={onNavigateToLogin}>Back to Login</button>
-            <button type="submit" className="register-submit-button">Submit</button>
+            <div className="register-privacy-group" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <label className="register-privacy-label" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+                <input type="checkbox" checked={privacyChecked} onChange={e => setPrivacyChecked(e.target.checked)} style={{marginRight: '8px'}} />
+                I agree to the <a href="https://www.privacy.gov.ph/data-privacy-act/" target="_blank" rel="noopener noreferrer" style={{marginLeft: '4px'}}>Data Privacy Act</a>
+              </label>
+            </div>
+            <button type="submit" className="register-submit-button" disabled={!privacyChecked}>Submit</button>
           </div>
         </form>
         </>

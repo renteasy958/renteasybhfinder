@@ -12,6 +12,10 @@ const Sidebar = ({ onSelect, selected }) => {
     { key: 'tenants', label: 'Tenants' },
     { key: 'boardinghouses', label: 'Boarding Houses' },
   ];
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
   return (
     <div className="admin-sidebar">
       <div className="sidebar-logo">
@@ -28,6 +32,12 @@ const Sidebar = ({ onSelect, selected }) => {
           </li>
         ))}
       </ul>
+      <button
+        className="sidebar-logout-btn"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
     </div>
   );
 };
