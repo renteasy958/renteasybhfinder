@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LLVerify from './llverify';
 import '../styles/llhome.css';
 import LLNavbar from './llnavbar';
+import { db } from '../../../firebase/config';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const LLHome = ({ onNavigate }) => {
   const [showModal, setShowModal] = useState(false);
@@ -10,44 +12,20 @@ const LLHome = ({ onNavigate }) => {
   const [showAllPending, setShowAllPending] = useState(false);
   const [showAllOccupied, setShowAllOccupied] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [boardingHouses, setBoardingHouses] = useState([]);
 
-  // Sample data for demonstration
-  // 10 listings, 10 pending, 10 occupied
-  const boardingHouses = [
-    // Listings (id: 1-10)
-    ...Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      name: `Listing House ${i + 1}`,
-      type: ['Dormitory', 'Apartment', 'Studio'][i % 3],
-      price: `₱${3500 + i * 200}/mo`,
-      address: `${100 + i} Main St, City`,
-      images: [`/images/listing${i + 1}a.jpg`],
-      includedAmenities: ['WiFi', 'Water', 'Electricity'].slice(0, (i % 3) + 1),
-      excludedAmenities: ['Laundry', 'Parking'].slice(0, (i % 2) + 1),
-    })),
-    // Pending (id: 11-20)
-    ...Array.from({ length: 10 }, (_, i) => ({
-      id: i + 11,
-      name: `Pending House ${i + 1}`,
-      type: ['Dormitory', 'Apartment', 'Studio'][i % 3],
-      price: `₱${3600 + i * 150}/mo`,
-      address: `${200 + i} Pending Rd, City`,
-      images: [`/images/pending${i + 1}a.jpg`],
-      includedAmenities: ['WiFi', 'Parking', 'Laundry'].slice(0, (i % 3) + 1),
-      excludedAmenities: ['Water', 'Electricity'].slice(0, (i % 2) + 1),
-    })),
-    // Occupied (id: 21-30)
-    ...Array.from({ length: 10 }, (_, i) => ({
-      id: i + 21,
-      name: `Occupied House ${i + 1}`,
-      type: ['Dormitory', 'Apartment', 'Studio'][i % 3],
-      price: `₱${3700 + i * 180}/mo`,
-      address: `${300 + i} Occupied St, City`,
-      images: [`/images/occupied${i + 1}a.jpg`],
-      includedAmenities: ['Water', 'Electricity', 'Laundry'].slice(0, (i % 3) + 1),
-      excludedAmenities: ['WiFi', 'Parking'].slice(0, (i % 2) + 1),
-    })),
-  ];
+  useEffect(() => {
+    const fetchBoardingHouses = async () => {
+      const q = query(collection(db, 'boardingHouses'));
+      const querySnapshot = await getDocs(q);
+      const houses = [];
+      querySnapshot.forEach((doc) => {
+        houses.push({ id: doc.id, ...doc.data() });
+      });
+      setBoardingHouses(houses);
+    };
+    fetchBoardingHouses();
+  }, []);
 
   const handleCardClick = (bh) => {
     setSelectedBH(bh);
@@ -59,10 +37,10 @@ const LLHome = ({ onNavigate }) => {
     setSelectedBH(null);
   };
 
-  // Example sections, you may want to filter by status in real app
-  const listings = boardingHouses.slice(0, 10); // First 10 as listings
-  const pending = boardingHouses.slice(10, 20); // Next 10 as pending
-  const occupied = boardingHouses.slice(20, 30); // Next 10 as occupied
+  // Filter by status
+  const listings = boardingHouses.filter(bh => bh.status === 'approved');
+  const pending = boardingHouses.filter(bh => bh.status === 'pending');
+  const occupied = boardingHouses.filter(bh => bh.status === 'occupied');
 
   return (
     <div className="llhome-container">
@@ -109,37 +87,26 @@ const LLHome = ({ onNavigate }) => {
           </div>
 
           {/* Pending Section */}
+          {/* Pending Section */}
           <div className="stat-card">
             <div className="stat-header">
               <div className="stat-label">Pending</div>
-              {pending.length > 5 && (
-                <button className="see-all-btn" onClick={() => setShowAllPending((v) => !v)}>
-                  {showAllPending ? 'Show Less' : 'See All'}
-                </button>
-              )}
             </div>
             <div className="card-items-container">
-              {(() => {
-                const arr = showAllPending ? pending : pending.slice(0, 10);
-                const rows = [];
-                for (let i = 0; i < arr.length; i += 5) {
-                  rows.push(arr.slice(i, i + 5));
-                }
-                return rows.map((row, idx) => (
-                  <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-                    {row.slice(0, 5).map((bh) => (
-                      <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-                        <div className="card-image-container"></div>
-                        <div className="card-content">
-                          <div className="card-name">{bh.name}</div>
-                          <div className="card-type">{bh.type}</div>
-                          <div className="card-price">{bh.price}</div>
-                        </div>
-                      </div>
-                    ))}
+              {pending.length === 0 ? (
+                <div className="no-pending-message"></div>
+              ) : (
+                pending.map((bh) => (
+                  <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
+                    <div className="card-image-container"></div>
+                    <div className="card-content">
+                      <div className="card-name">{bh.name}</div>
+                      <div className="card-type">{bh.type}</div>
+                      <div className="card-price">{bh.price}</div>
+                    </div>
                   </div>
-                ));
-              })()}
+                ))
+              )}
             </div>
           </div>
 

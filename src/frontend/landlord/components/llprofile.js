@@ -39,16 +39,27 @@ const LLProfile = ({ onNavigate }) => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageData = reader.result;
-        setProfilePicture(imageData);
-        localStorage.setItem('llProfilePicture', imageData);
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('image', file);
+      try {
+        // Adjust the URL if your backend runs elsewhere
+        const response = await fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+        if (data.url) {
+          setProfilePicture(data.url);
+          localStorage.setItem('llProfilePicture', data.url);
+        } else {
+          alert('Image upload failed.');
+        }
+      } catch (err) {
+        alert('Error uploading image.');
+      }
     }
   };
 

@@ -113,19 +113,40 @@ const AddBH = ({ onNavigate }) => {
   };
 
   const handleSubmit = async () => {
+    // Basic validation
+    if (!formData.name || !formData.type || !formData.price || !location || images.length === 0) {
+      alert('Please fill in all required fields, select a location, and upload at least one image.');
+      return;
+    }
     try {
-      // Upload images to Firebase Storage and get download URLs
+      // Upload images to backend (Cloudinary) and get URLs
       const imageUrls = [];
       for (const image of images) {
-        const timestamp = Date.now();
-        const storageRef = ref(storage, `boardingHouses/${timestamp}_${image.file.name}`);
-        await uploadBytes(storageRef, image.file);
-        const downloadURL = await getDownloadURL(storageRef);
-        imageUrls.push(downloadURL);
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', image.file);
+        const response = await fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        });
+        const data = await response.json();
+        if (data.url) {
+          imageUrls.push(data.url);
+        } else {
+          throw new Error('Image upload failed');
+        }
       }
 
+      // Only send serializable fields to Firestore
       const boardingHouseData = {
-        ...formData,
+        name: formData.name,
+        sitio: formData.sitio,
+        barangay: formData.barangay,
+        municipality: formData.municipality,
+        province: formData.province,
+        type: formData.type,
+        price: formData.price,
+        availableRooms: formData.availableRooms || '',
+        description: formData.description || '',
         images: imageUrls,
         includedAmenities,
         excludedAmenities,
@@ -265,54 +286,54 @@ const AddBH = ({ onNavigate }) => {
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <label>Type of Boarding House</label>
-                        <select name="type" value={formData.type} onChange={handleInputChange}>
-                          <option value="">Select Type</option>
-                          <option value="Bed Spacer">Bed Spacer</option>
-                          <option value="Single Room">Single Room</option>
-                          <option value="Shared Room (2-4 pax)">Shared Room (2-4 pax)</option>
-                          <option value="Shared Room (5-8 pax)">Shared Room (5-8 pax)</option>
-                          <option value="Apartment Type">Apartment Type</option>
-                          <option value="Family">Family</option>
-                        </select>
-                      </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <label>Quantity</label>
-                        <input
-                          type="number"
-                          name="quantity"
-                          value={formData.quantity || ''}
-                          onChange={handleInputChange}
-                          placeholder="Quantity"
-                          min="1"
-                        />
-                      </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <label>Price</label>
-                        <input
-                          type="number"
-                          name="price"
-                          value={formData.price}
-                          onChange={handleInputChange}
-                          placeholder="Enter price"
-                        />
-                      </div>
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ flex: '0 0 300px' }}>
+                      <label style={{ display: 'block' }}>Type of Boarding House</label>
+                      <select name="type" value={formData.type} onChange={handleInputChange} style={{ width: '100%' }}>
+                        <option value="">Select Type</option>
+                        <option value="Bed Spacer">Bed Spacer</option>
+                        <option value="Single Room">Single Room</option>
+                        <option value="Shared Room (2-4 pax)">Shared Room (2-4 pax)</option>
+                        <option value="Shared Room (5-8 pax)">Shared Room (5-8 pax)</option>
+                        <option value="Apartment Type">Apartment Type</option>
+                        <option value="Family">Family</option>
+                      </select>
+                    </div>
+                    <div style={{ flex: '0 0 120px', marginRight: '16px' }}>
+                      <label style={{ display: 'block' }}>Available Rooms</label>
+                      <input
+                        type="number"
+                        name="availableRooms"
+                        value={formData.availableRooms || ''}
+                        onChange={handleInputChange}
+                        placeholder="Number of rooms"
+                        min={1}
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+                    <div style={{ flex: '0 0 100px' }}>
+                      <label style={{ display: 'block' }}>Price</label>
+                      <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        placeholder="Enter price"
+                        min={0}
+                        style={{ width: '100%' }}
+                      />
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label>Description</label>
-                    <textarea
+                    <label style={{ display: 'block' }}>Description</label>
+                    <input
+                      type="text"
                       name="description"
                       value={formData.description || ''}
                       onChange={handleInputChange}
-                      placeholder="Enter a short description of the boarding house"
-                      rows={3}
-                      className="input description-input"
-                      style={{ resize: 'none', padding: '10px', borderRadius: '6px', border: '1px solid #d1d5db', fontFamily: 'inherit', fontSize: '15px' }}
+                      placeholder="Add a description for your boarding house"
+                      style={{ width: '100%', height: '32px' }}
                     />
                   </div>
                 </div>
@@ -327,8 +348,8 @@ const AddBH = ({ onNavigate }) => {
 
         {currentStep === 2 && (
           <div className="form-section">
-            <div className="amenities-container" style={{ display: 'flex', gap: '0', alignItems: 'stretch', position: 'relative' }}>
-              <div className="amenities-section" style={{ flex: 1, paddingRight: '24px' }}>
+            <div className="amenities-container">
+              <div className="amenities-section">
                 <h3>Included in Monthly Payment</h3>
                 <div className="amenities-grid">
                   {amenitiesList.map((amenity) => (
@@ -346,8 +367,8 @@ const AddBH = ({ onNavigate }) => {
                   ))}
                 </div>
               </div>
-              <div style={{ width: '2px', background: '#e5e7eb', height: 'auto', margin: '0 0', alignSelf: 'stretch' }}></div>
-              <div className="amenities-section" style={{ flex: 1, paddingLeft: '24px' }}>
+
+              <div className="amenities-section">
                 <h3>Excluded in Monthly Payment</h3>
                 <div className="amenities-grid">
                   {amenitiesList.map((amenity) => (
@@ -366,6 +387,7 @@ const AddBH = ({ onNavigate }) => {
                 </div>
               </div>
             </div>
+
             <div className="form-navigation">
               <button className="back-button" onClick={() => setCurrentStep(1)}>Back</button>
               <button className="next-button" onClick={() => setCurrentStep(3)}>Next</button>
@@ -397,7 +419,10 @@ const AddBH = ({ onNavigate }) => {
                   {location && <Marker position={[location.lat, location.lng]} />}
                 </MapContainer>
               </div>
-              {/* Removed Selected Location display as requested */}
+              {location && (
+                <div className="location-info">
+                </div>
+              )}
             </div>
 
             <div className="form-navigation">

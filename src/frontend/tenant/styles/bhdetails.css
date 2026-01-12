@@ -659,6 +659,30 @@
   background-color: #011d47;
 }
 
+.modal-proceed-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background-color: #012e6a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
+}
+
+.modal-proceed-btn:hover {
+  background-color: #011d47;
+  transform: translateY(-2px);
+}
+
+.modal-proceed-btn:active {
+  transform: translateY(0);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

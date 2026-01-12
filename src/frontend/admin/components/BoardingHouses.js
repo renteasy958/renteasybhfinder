@@ -1,79 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/boardinghouses.css';
-
-const sampleBH = [
-	{
-		id: 1,
-		name: 'Sunrise Dormitory',
-		type: 'Dorm',
-		price: '₱3,500/mo',
-		image: '',
-		status: 'Available',
-		quantity: 5,
-		address: '123 Main St, City, Province',
-		inclusions: ['WiFi', 'Water', 'Electricity'],
-		exclusions: ['Meals', 'Laundry'],
-		landlord: {
-			name: 'Juan Dela Cruz',
-			address: '456 Landlord St, City, Province',
-			contact: '09171234567',
-		},
-		images: [
-			'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-			'https://images.unsplash.com/photo-1464983953574-0892a716854b',
-		],
-	},
-	{
-		id: 2,
-		name: 'Blue House',
-		type: 'Apartment',
-		price: '₱5,000/mo',
-		image: '',
-		status: 'Occupied',
-		quantity: 0,
-		address: '456 Blue St, City, Province',
-		inclusions: ['WiFi'],
-		exclusions: ['Water', 'Electricity', 'Meals'],
-		landlord: {
-			name: 'Maria Santos',
-			address: '789 Landlord Ave, City, Province',
-			contact: '09179876543',
-		},
-		images: [
-			'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-		],
-		tenant: {
-			name: 'Pedro Reyes',
-			address: '101 Tenant St, City, Province',
-			age: 22,
-			birthdate: '2003-05-10',
-			civilStatus: 'Single',
-			gender: 'Male',
-			mobile: '09171231234',
-			email: 'pedro.reyes@email.com',
-		},
-	},
-	{
-		id: 3,
-		name: 'Green Villa',
-		type: 'Boarding House',
-		price: '₱4,200/mo',
-		image: '',
-		status: 'Available',
-		quantity: 2,
-		address: '789 Green St, City, Province',
-		inclusions: ['WiFi', 'Parking'],
-		exclusions: ['Meals'],
-		landlord: {
-			name: 'Ana Cruz',
-			address: '123 Landlord Ave, City, Province',
-			contact: '09179998888',
-		},
-		images: [
-			'https://images.unsplash.com/photo-1464983953574-0892a716854b',
-		],
-	},
-];
+import { db } from '../../../firebase/config';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const tabs = [
 	{ key: 'available', label: 'Available' },
@@ -82,16 +10,28 @@ const tabs = [
 
 
 const BoardingHouses = () => {
-		const [activeTab, setActiveTab] = useState('available');
-		const filtered = sampleBH.filter((bh) => bh.status.toLowerCase() === activeTab);
-
+	const [activeTab, setActiveTab] = useState('available');
+	const [boardingHouses, setBoardingHouses] = useState([]);
 	const [selected, setSelected] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 
-		const handleCardClick = (bh) => {
-			setSelected(bh);
-			setShowModal(true);
+	useEffect(() => {
+		const fetchApproved = async () => {
+			const q = query(collection(db, 'boardingHouses'), where('status', '==', activeTab === 'available' ? 'approved' : 'occupied'));
+			const querySnapshot = await getDocs(q);
+			const houses = [];
+			querySnapshot.forEach((doc) => {
+				houses.push({ id: doc.id, ...doc.data() });
+			});
+			setBoardingHouses(houses);
 		};
+		fetchApproved();
+	}, [activeTab]);
+
+	const handleCardClick = (bh) => {
+		setSelected(bh);
+		setShowModal(true);
+	};
 
 	const closeModal = () => {
 		setShowModal(false);
@@ -113,7 +53,7 @@ const BoardingHouses = () => {
 			</div>
 			<div className="bh-cards-list">
 				<div className="card-row">
-								{filtered.map((bh) => (
+								{boardingHouses.map((bh) => (
 									<div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)} style={{cursor: 'pointer'}}>
 										<div className="card-image-container" style={bh.images && bh.images[0] ? {backgroundImage: `url(${bh.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center'} : {}}></div>
 										<div className="card-content">

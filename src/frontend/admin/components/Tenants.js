@@ -2,41 +2,8 @@
 import React, { useState } from 'react';
 import '../styles/tenants.css';
 
-const sampleData = [
-	{
-		id: 1,
-		name: 'Maria Santos',
-		email: 'maria@email.com',
-		phone: '09171234567',
-		address: '123 Main St, Quezon City',
-		gender: 'Female',
-		birthday: '1998-05-10',
-		civilStatus: 'Single',
-		type: 'Student',
-	},
-	{
-		id: 2,
-		name: 'Ana Cruz',
-		email: 'ana@email.com',
-		phone: '09181234567',
-		address: '456 Elm St, Manila',
-		gender: 'Female',
-		birthday: '1997-11-22',
-		civilStatus: 'Married',
-		type: 'Tenant',
-	},
-	{
-		id: 3,
-		name: 'John Dela Cruz',
-		email: 'john@email.com',
-		phone: '09191234567',
-		address: '789 Pine St, Makati',
-		gender: 'Male',
-		birthday: '1996-03-15',
-		civilStatus: 'Single',
-		type: 'Student',
-	},
-];
+// No sample tenants
+const sampleData = [];
 
 const Tenants = () => {
 	const [selectedTenant, setSelectedTenant] = useState(null);

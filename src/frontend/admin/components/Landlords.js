@@ -2,38 +2,8 @@
 import React, { useState } from 'react';
 import '../styles/landlords.css';
 
-const sampleData = [
-	{
-		id: 1,
-		name: 'Juan Dela Cruz',
-		email: 'juan@email.com',
-		status: 'Verified',
-		civilStatus: 'Single',
-		gender: 'Male',
-		birthdate: '1990-05-10',
-		mobileNumber: '09171234567',
-		address: '123 Main St, Barangay 1, Isabela, Negros Occidental',
-		boardingHouse: {
-			name: 'Sunrise Dormitory',
-			address: '123 Main St, Barangay 1, Isabela, Negros Occidental',
-		},
-	},
-	{
-		id: 2,
-		name: 'Pedro Reyes',
-		email: 'pedro@email.com',
-		status: 'Verified',
-		civilStatus: 'Married',
-		gender: 'Male',
-		birthdate: '1985-11-22',
-		mobileNumber: '09179876543',
-		address: '456 Elm St, Barangay 2, Isabela, Negros Occidental',
-		boardingHouse: {
-			name: 'Blue House',
-			address: '456 Elm St, Barangay 2, Isabela, Negros Occidental',
-		},
-	},
-];
+// No sample landlords
+const sampleData = [];
 
 const Landlords = () => {
 	const [selected, setSelected] = useState(null);

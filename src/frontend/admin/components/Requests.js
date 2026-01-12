@@ -2,12 +2,8 @@
 import React, { useState } from 'react';
 import '../styles/requests.css';
 
-const sampleData = [
-	{ id: 1, request: 'Refund', user: 'Maria Santos', label: 'Tenant', date: '2026-01-10', status: 'Pending', gcash: '09171234567', amount: '₱500.00' },
-	{ id: 2, request: 'Withdrawal Request', user: 'Juan Dela Cruz', label: 'Landlord', date: '2026-01-09', status: 'Pending', gcash: '09179876543', amount: '₱1,200.00' },
-	{ id: 3, request: 'Refund', user: 'Ana Cruz', label: 'Tenant', date: '2026-01-11', status: 'Pending', gcash: '09179998888', amount: '₱300.00' },
-	{ id: 4, request: 'Withdrawal Request', user: 'Pedro Reyes', label: 'Landlord', date: '2026-01-08', status: 'Pending', gcash: '09170001111', amount: '₱2,000.00' },
-];
+// No sample requests
+const sampleData = [];
 
 
 const Requests = () => {

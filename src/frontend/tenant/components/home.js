@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/home.css';
 import Navbar from './navbar';
 
 const Home = ({ onNavigateToBHDetails, onNavigate, onSearchResults }) => {
-  // 10 samples for Boarding Houses only
-  const listings = Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    name: `Listing ${i + 1}`,
-    address: `${100 + i} Main St, City`
-  }));
+  const [listings, setListings] = useState([]);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const { db } = await import('../../../firebase/config');
+        const { collection, query, where, getDocs } = await import('firebase/firestore');
+        const q = query(collection(db, 'boardingHouses'), where('status', '==', 'approved'));
+        const querySnapshot = await getDocs(q);
+        const houses = [];
+        querySnapshot.forEach((doc) => {
+          houses.push({ id: doc.id, ...doc.data() });
+        });
+        setListings(houses);
+      } catch (error) {
+        console.error('Error fetching approved boarding houses:', error);
+      }
+    };
+    fetchListings();
+  }, []);
 
   // Helper to chunk array into rows of 6
   const chunkRows = (arr) => {
@@ -47,10 +61,23 @@ const Home = ({ onNavigateToBHDetails, onNavigate, onSearchResults }) => {
         {listingsRows.map((row, rowIdx) => (
           <div className="boarding-cards-row" key={rowIdx}>
             {row.map((house) => (
-              <div key={house.id} className="boarding-card" onClick={onNavigateToBHDetails}>
-                <div className="boarding-card-image"></div>
+              <div key={house.id} className="boarding-card" onClick={() => onNavigateToBHDetails(house.id)}>
+                <div
+                  className="boarding-card-image"
+                  style={house.images && house.images[0] ? {
+                    backgroundImage: `url(${house.images[0]})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  } : {}}
+                ></div>
                 <h3 className="boarding-card-name">{house.name}</h3>
-                <p className="boarding-card-address">{house.address}</p>
+                <p className="boarding-card-address">
+                  {house.sitio ? house.sitio + ', ' : ''}
+                  {house.barangay ? house.barangay + ', ' : ''}
+                  {house.municipality ? house.municipality + ', ' : ''}
+                  {house.province ? house.province : ''}
+                </p>
+                <p className="boarding-card-price">{house.price}</p>
               </div>
             ))}
           </div>

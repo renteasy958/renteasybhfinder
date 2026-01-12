@@ -23,6 +23,7 @@ function getInitialPage() {
 function App() {
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedBHId, setSelectedBHId] = useState(null);
   // const [showLLVerifyModal, setShowLLVerifyModal] = useState(false);
 
   // Keep currentPage in sync with user type for refresh persistence
@@ -38,9 +39,9 @@ function App() {
     <div className="App">
       {currentPage === 'login' && <Login onNavigateToRegister={() => setCurrentPage('register')} onNavigateToHome={() => setCurrentPage('home')} onNavigateToLLHome={() => setCurrentPage('llhome')} onNavigateToAdmin={() => setCurrentPage('admindashboard')} />}
       {currentPage === 'register' && <Register onNavigateToLogin={() => setCurrentPage('login')} onNavigateToHome={() => setCurrentPage('home')} onNavigateToLLHome={() => setCurrentPage('llhome')} />}
-      {currentPage === 'home' && <Home onNavigateToBHDetails={() => setCurrentPage('bhdetails')} onNavigate={(page) => setCurrentPage(page)} onSearchResults={(results) => { setSearchResults(results); setCurrentPage('searchresults'); }} currentPage={currentPage} />}
+      {currentPage === 'home' && <Home onNavigateToBHDetails={(id) => { setSelectedBHId(id); setCurrentPage('bhdetails'); }} onNavigate={(page) => setCurrentPage(page)} onSearchResults={(results) => { setSearchResults(results); setCurrentPage('searchresults'); }} currentPage={currentPage} />}
       {currentPage === 'searchresults' && <SearchResults results={searchResults} onBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
-      {currentPage === 'bhdetails' && <BHDetails onNavigateBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
+      {currentPage === 'bhdetails' && <BHDetails bhId={selectedBHId} onNavigateBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
       {currentPage === 'liked' && <Liked onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
       {currentPage === 'profile' && <Profile onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
       {currentPage === 'llhome' && <LLHome onNavigate={(page) => setCurrentPage(page)} />}

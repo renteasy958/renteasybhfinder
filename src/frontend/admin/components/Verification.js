@@ -2,42 +2,8 @@
 import React, { useState } from 'react';
 import '../styles/verification.css';
 
-const landlordRegistrations = [
-	{
-		id: 1,
-		name: 'Juan Dela Cruz',
-		civilStatus: 'Single',
-		gender: 'Male',
-		birthdate: '1990-05-10',
-		address: {
-			street: '123 Main St',
-			barangay: 'Barangay 1',
-			city: 'Isabela',
-			province: 'Negros Occidental',
-		},
-		mobileNumber: '09171234567',
-		email: 'juan.landlord@email.com',
-		status: 'Not Verified',
-		referenceNumber: 'REF-20260111-001',
-	},
-	{
-		id: 2,
-		name: 'Pedro Reyes',
-		civilStatus: 'Married',
-		gender: 'Male',
-		birthdate: '1985-11-22',
-		address: {
-			street: '456 Elm St',
-			barangay: 'Barangay 2',
-			city: 'Isabela',
-			province: 'Negros Occidental',
-		},
-		mobileNumber: '09179876543',
-		email: 'pedro.landlord@email.com',
-		status: 'Not Verified',
-		referenceNumber: 'REF-20260111-002',
-	},
-];
+// No sample landlord registrations
+const landlordRegistrations = [];
 
 const Verification = () => {
 	const [selected, setSelected] = useState(null);

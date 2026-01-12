@@ -1,10 +1,8 @@
 import React from 'react';
 import '../styles/transactionhistory.css';
 
-const sampleData = [
-	{ id: 1, transaction: 'Payment', user: 'Juan Dela Cruz', date: '2026-01-10', amount: '₱1,200.00', status: 'Completed' },
-	{ id: 2, transaction: 'Refund', user: 'Maria Santos', date: '2026-01-09', amount: '₱500.00', status: 'Completed' },
-];
+// No sample transaction history
+const sampleData = [];
 
 const TransactionHistory = () => (
 	<div className="admin-page transaction-history-page">
