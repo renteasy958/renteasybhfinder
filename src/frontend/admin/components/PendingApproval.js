@@ -52,16 +52,20 @@ const PendingApproval = () => {
 		<div className="admin-page">
 			<div className="bh-cards-list">
 				<div className="card-row">
-					{pendingBH.length > 0 && pendingBH.map((bh) => (
-						<div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
-							<div className="card-image-container" style={{backgroundImage: bh.images && bh.images[0] ? `url(${bh.images[0]})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center'}}></div>
-							<div className="card-content">
-								<div className="card-name">{bh.name}</div>
-								<div className="card-type">{bh.type}</div>
-								<div className="card-price">{bh.price}</div>
+					{pendingBH.length === 0 ? (
+						<p style={{textAlign: 'center', width: '100%'}}>No pending boarding houses found</p>
+					) : (
+						pendingBH.map((bh) => (
+							<div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
+								<div className="card-image-container" style={{backgroundImage: bh.images && bh.images[0] ? `url(${bh.images[0]})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center'}}></div>
+								<div className="card-content">
+									<div className="card-name">{bh.name}</div>
+									<div className="card-type">{bh.type}</div>
+									<div className="card-price">{bh.price}</div>
+								</div>
 							</div>
-						</div>
-					))}
+						))
+					)}
 				</div>
 			</div>
 			{showModal && selected && (

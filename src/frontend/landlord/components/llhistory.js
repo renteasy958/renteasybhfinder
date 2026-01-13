@@ -5,32 +5,7 @@ import '../styles/llhistory.css';
 import '../../admin/styles/transactionhistory.css';
 
 const LLHistory = ({ onNavigate }) => {
-  const [historyData] = useState([
-    {
-      id: 1,
-      type: 'Reservation',
-      bhName: 'Sample Boarding House 1',
-      tenantName: 'John Doe',
-      amount: '5000',
-      status: 'Approved',
-      date: '2026-01-05'
-    },
-    {
-      id: 2,
-      type: 'Withdrawal',
-      amount: '10000',
-      gcashNumber: '09123456789',
-      status: 'Completed',
-      date: '2026-01-03'
-    },
-    {
-      id: 3,
-      type: 'Listing',
-      bhName: 'Sample Boarding House 2',
-      status: 'Rejected',
-      date: '2026-01-01'
-    }
-  ]);
+  const [historyData] = useState([]);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   
   const getStatusColor = (status) => {

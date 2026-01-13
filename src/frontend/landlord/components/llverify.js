@@ -16,6 +16,9 @@ const LLVerify = ({ show, onClose }) => {
           </svg>
         </button>
         <h2 className="modal-title">ACCOUNT VERIFICATION PAYMENT</h2>
+        <p className="verification-notice" style={{ color: '#000', fontWeight: 'bold', marginBottom: '12px', textAlign: 'center' }}>
+          Notice: You will pay <span style={{ color: '#000' }}>₱300</span> to verify your account.
+        </p>
         <div className="payment-content">
           <div className="qr-section">
             <img src={require('../../images/300.jpg')} alt="QR Code" className="qr-code" />

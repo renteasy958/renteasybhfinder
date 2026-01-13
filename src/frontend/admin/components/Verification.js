@@ -25,12 +25,16 @@ const Verification = () => {
 	return (
 		<div className="admin-page">
 			<div className="admin-cards-list">
-				{landlordRegistrations.map((landlord) => (
-								<div key={landlord.id} className="admin-card" onClick={() => handleCardClick(landlord)}>
-									<span className="admin-card-title">{landlord.name}</span>
-									<span className="admin-card-status not-verified">{landlord.status}</span>
-								</div>
-				))}
+				{landlordRegistrations.length === 0 ? (
+					<p style={{textAlign: 'center', width: '100%'}}>No landlord verifications found</p>
+				) : (
+					landlordRegistrations.map((landlord) => (
+						<div key={landlord.id} className="admin-card" onClick={() => handleCardClick(landlord)}>
+							<span className="admin-card-title">{landlord.name}</span>
+							<span className="admin-card-status not-verified">{landlord.status}</span>
+						</div>
+					))
+				)}
 			</div>
 					{showModal && selected && (
 						<div className="modal-overlay" onClick={closeModal}>

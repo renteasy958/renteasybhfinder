@@ -46,14 +46,18 @@ const Requests = () => {
 				<button className={`requests-tab${activeTab === 'Landlord' ? ' active' : ''}`} onClick={() => setActiveTab('Landlord')}>Landlord</button>
 			</div>
 			<div className="admin-cards-list">
-				{filtered.map((item) => (
-					<div key={item.id} className="admin-card" onClick={() => handleCardClick(item)} style={{cursor: 'pointer'}}>
-						<span className="admin-card-title">{item.request}</span>
-						<span className="admin-card-type">{item.user}</span>
-						<span className="admin-card-date">{item.date}</span>
-						<span className={item.status === 'Pending' ? 'admin-card-status pending' : 'admin-card-status completed'}>{item.status}</span>
-					</div>
-				))}
+				{filtered.length === 0 ? (
+					<p style={{textAlign: 'center', width: '100%'}}>No requests found</p>
+				) : (
+					filtered.map((item) => (
+						<div key={item.id} className="admin-card" onClick={() => handleCardClick(item)} style={{cursor: 'pointer'}}>
+							<span className="admin-card-title">{item.request}</span>
+							<span className="admin-card-type">{item.user}</span>
+							<span className="admin-card-date">{item.date}</span>
+							<span className={item.status === 'Pending' ? 'admin-card-status pending' : 'admin-card-status completed'}>{item.status}</span>
+						</div>
+					))
+				)}
 			</div>
 			{showModal && selected && (
 				<div className="modal-overlay" onClick={closeModal}>

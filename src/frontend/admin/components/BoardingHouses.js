@@ -53,16 +53,20 @@ const BoardingHouses = () => {
 			</div>
 			<div className="bh-cards-list">
 				<div className="card-row">
-								{boardingHouses.map((bh) => (
-									<div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)} style={{cursor: 'pointer'}}>
-										<div className="card-image-container" style={bh.images && bh.images[0] ? {backgroundImage: `url(${bh.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center'} : {}}></div>
-										<div className="card-content">
-											<div className="card-name">{bh.name}</div>
-											<div className="card-type">{bh.type}</div>
-											<div className="card-price">{bh.price}</div>
-										</div>
-									</div>
-								))}
+					{boardingHouses.length === 0 ? (
+						<p style={{textAlign: 'center', width: '100%'}}>No boarding houses found</p>
+					) : (
+						boardingHouses.map((bh) => (
+							<div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)} style={{cursor: 'pointer'}}>
+								<div className="card-image-container" style={bh.images && bh.images[0] ? {backgroundImage: `url(${bh.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center'} : {}}></div>
+								<div className="card-content">
+									<div className="card-name">{bh.name}</div>
+									<div className="card-type">{bh.type}</div>
+									<div className="card-price">{bh.price}</div>
+								</div>
+							</div>
+						))
+					)}
 				</div>
 			</div>
 					{showModal && selected && (
