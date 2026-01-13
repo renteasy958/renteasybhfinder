@@ -13,23 +13,48 @@ const LLHome = ({ onNavigate }) => {
   const [showAllOccupied, setShowAllOccupied] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [boardingHouses, setBoardingHouses] = useState([]);
+  const [approvedReservations, setApprovedReservations] = useState([]);
 
   useEffect(() => {
-    const fetchBoardingHouses = async () => {
+    const fetchBoardingHousesAndReservations = async () => {
       const user = auth.currentUser;
       if (!user) {
         setBoardingHouses([]);
+        setApprovedReservations([]);
         return;
       }
-      const q = query(collection(db, 'boardingHouses'), where('userId', '==', user.uid));
-      const querySnapshot = await getDocs(q);
+      // Fetch boarding houses
+      const bhQ = query(collection(db, 'boardingHouses'), where('userId', '==', user.uid));
+      const bhSnapshot = await getDocs(bhQ);
       const houses = [];
-      querySnapshot.forEach((doc) => {
+      bhSnapshot.forEach((doc) => {
         houses.push({ id: doc.id, ...doc.data() });
       });
       setBoardingHouses(houses);
+
+      // Fetch approved reservations for these boarding houses
+      const bhIds = houses.map(bh => bh.id);
+      if (bhIds.length === 0) {
+        setApprovedReservations([]);
+        return;
+      }
+      // Firestore doesn't support 'in' queries with more than 10 items, so batch if needed
+      let reservations = [];
+      for (let i = 0; i < bhIds.length; i += 10) {
+        const batchIds = bhIds.slice(i, i + 10);
+        const resQ = query(
+          collection(db, 'reservations'),
+          where('boardingHouseId', 'in', batchIds),
+          where('status', '==', 'Approved')
+        );
+        const resSnapshot = await getDocs(resQ);
+        resSnapshot.forEach((doc) => {
+          reservations.push({ id: doc.id, ...doc.data() });
+        });
+      }
+      setApprovedReservations(reservations);
     };
-    fetchBoardingHouses();
+    fetchBoardingHousesAndReservations();
   }, []);
 
   const handleCardClick = (bh) => {
@@ -45,7 +70,11 @@ const LLHome = ({ onNavigate }) => {
   // Filter by status
   const listings = boardingHouses.filter(bh => bh.status === 'approved');
   const pending = boardingHouses.filter(bh => bh.status === 'pending');
-  const occupied = boardingHouses.filter(bh => bh.status === 'occupied');
+  // Occupied cards: one per approved reservation
+  const occupiedRooms = approvedReservations.map(res => {
+    const bh = boardingHouses.find(bh => bh.id === res.boardingHouseId);
+    return bh ? { ...bh, _reservation: res } : null;
+  }).filter(Boolean);
 
   return (
     <div className="llhome-container">
@@ -127,7 +156,7 @@ const LLHome = ({ onNavigate }) => {
           <div className="stat-card">
             <div className="stat-header">
               <div className="stat-label">Occupied</div>
-              {occupied.length > 5 && (
+              {occupiedRooms.length > 5 && (
                 <button className="see-all-btn" onClick={() => setShowAllOccupied((v) => !v)}>
                   {showAllOccupied ? 'Show Less' : 'See All'}
                 </button>
@@ -135,15 +164,15 @@ const LLHome = ({ onNavigate }) => {
             </div>
             <div className="card-items-container">
               {(() => {
-                const arr = showAllOccupied ? occupied : occupied.slice(0, 10);
+                const arr = showAllOccupied ? occupiedRooms : occupiedRooms.slice(0, 10);
                 const rows = [];
                 for (let i = 0; i < arr.length; i += 5) {
                   rows.push(arr.slice(i, i + 5));
                 }
                 return rows.map((row, idx) => (
                   <div key={idx} className="card-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-                    {row.slice(0, 5).map((bh) => (
-                      <div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)}>
+                    {row.slice(0, 5).map((bh, i) => (
+                      <div key={bh.id + '-' + (bh._reservation ? bh._reservation.id : i)} className="rectangle-card" onClick={() => handleCardClick(bh)}>
                         <div className="card-image-container">
                           {bh.images && bh.images.length > 0 && (
                             <img src={bh.images[0]} alt="Boarding House" className="card-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

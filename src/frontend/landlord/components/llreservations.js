@@ -153,7 +153,35 @@ const LLReservations = ({ onNavigate }) => {
                   setReservations(prev => prev.filter(r => r.id !== selectedReservation.id));
                   closeModal();
                 }}>Reject</button>
-                <button className="approve-button">Approve</button>
+                <button className="approve-button" onClick={async () => {
+                  try {
+                    const { doc, updateDoc, getDoc } = await import('firebase/firestore');
+                    const { db } = await import('../../../firebase/config');
+                    if (selectedReservation.boardingHouseId) {
+                      const bhRef = doc(db, 'boardingHouses', selectedReservation.boardingHouseId);
+                      const bhSnap = await getDoc(bhRef);
+                      if (bhSnap.exists()) {
+                        const bhData = bhSnap.data();
+                        let availableRooms = parseInt(bhData.availableRooms, 10);
+                        if (isNaN(availableRooms)) availableRooms = 0;
+                        const newRooms = availableRooms - 1;
+                        if (newRooms <= 0) {
+                          await updateDoc(bhRef, { availableRooms: 0, status: 'occupied' });
+                        } else {
+                          await updateDoc(bhRef, { availableRooms: newRooms });
+                        }
+                      }
+                    }
+                    // Optionally, update reservation status to 'Approved' (if you want to track it)
+                    await updateDoc(doc(db, 'reservations', selectedReservation.id), { status: 'Approved' });
+                  } catch (err) {
+                    alert('Failed to approve reservation or update boarding house status.');
+                    return;
+                  }
+                  // Remove the reservation from the list after approval
+                  setReservations(prev => prev.filter(r => r.id !== selectedReservation.id));
+                  closeModal();
+                }}>Approve</button>
               </div>
             </div>
           </div>
