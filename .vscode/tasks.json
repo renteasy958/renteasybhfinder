@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Backend Server",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "${workspaceFolder}/src/backend"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": "build"
+    }
+    ,
+    {
+      "label": "Start Frontend Server",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ],
+  "compounds": [
+    {
+      "label": "Start All Servers",
+      "dependsOn": ["Start Backend Server", "Start Frontend Server"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}

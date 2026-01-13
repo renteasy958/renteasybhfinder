@@ -4,8 +4,9 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, useMapEvents, Rectangle } from 'react-leaflet';
 import L from 'leaflet';
 import LLNavbar from './llnavbar';
-import { db, storage } from '../../../firebase/config';
+import { db, storage, auth } from '../../../firebase/config';
 import { collection, addDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Fix for default marker icon
@@ -113,6 +114,12 @@ const AddBH = ({ onNavigate }) => {
   };
 
   const handleSubmit = async () => {
+    // Get current user
+    const user = auth.currentUser;
+    if (!user) {
+      alert('You must be logged in to add a boarding house.');
+      return;
+    }
     // Basic validation
     if (!formData.name || !formData.type || !formData.price || !location || images.length === 0) {
       alert('Please fill in all required fields, select a location, and upload at least one image.');
@@ -152,7 +159,8 @@ const AddBH = ({ onNavigate }) => {
         excludedAmenities,
         location,
         status: 'pending',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        userId: user.uid
       };
 
       await addDoc(collection(db, 'boardingHouses'), boardingHouseData);

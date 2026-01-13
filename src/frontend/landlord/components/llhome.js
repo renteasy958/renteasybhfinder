@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LLVerify from './llverify';
 import '../styles/llhome.css';
 import LLNavbar from './llnavbar';
-import { db } from '../../../firebase/config';
+import { db, auth } from '../../../firebase/config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const LLHome = ({ onNavigate }) => {
@@ -16,7 +16,12 @@ const LLHome = ({ onNavigate }) => {
 
   useEffect(() => {
     const fetchBoardingHouses = async () => {
-      const q = query(collection(db, 'boardingHouses'));
+      const user = auth.currentUser;
+      if (!user) {
+        setBoardingHouses([]);
+        return;
+      }
+      const q = query(collection(db, 'boardingHouses'), where('userId', '==', user.uid));
       const querySnapshot = await getDocs(q);
       const houses = [];
       querySnapshot.forEach((doc) => {
