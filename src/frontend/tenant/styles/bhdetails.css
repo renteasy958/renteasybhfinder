@@ -1,3 +1,19 @@
+/* Success modal Okay button styling */
+.success-modal-ok-btn {
+  background-color: #012e6a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+.success-modal-ok-btn:hover {
+  background-color: #014da3;
+}
 .bhdetails-container {
   width: 100%;
   font-family: 'Poppins', sans-serif;

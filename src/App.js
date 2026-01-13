@@ -16,6 +16,8 @@ import AdminDashboard from './frontend/admin/AdminDashboard';
 // import LLSettings from './frontend/landlord/components/llsettings';
 import History from './frontend/tenant/components/history';
 
+
+
 function getInitialPage() {
   const userData = JSON.parse(localStorage.getItem('userData') || 'null');
   if (userData && userData.userType) {
@@ -25,7 +27,6 @@ function getInitialPage() {
   }
   return 'login';
 }
-
 
 function App() {
   const [currentPage, setCurrentPage] = useState(getInitialPage());
@@ -66,7 +67,16 @@ function App() {
       {currentPage === 'addbh' && <AddBH onNavigate={(page) => setCurrentPage(page)} />}
       {currentPage === 'llhistory' && <LLHistory onNavigate={(page) => setCurrentPage(page)} />}
       {/* Removed LLSettings and llverify modal navigation, handled in navbar dropdown */}
-      {currentPage === 'history' && <History onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
+      {currentPage === 'history' && (
+        <History 
+          onNavigate={(page) => setCurrentPage(page)} 
+          currentPage={currentPage} 
+          userId={(() => {
+            const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+            return userData && (userData.uid || userData.id) ? (userData.uid || userData.id) : '';
+          })()}
+        />
+      )}
       {/* No settings page, handled in navbar dropdown. Removed all LLSettings references. */}
       {currentPage === 'llprofile' && <LLProfile onNavigate={(page) => setCurrentPage(page)} />}
       {/* LLVerifyModal removed */}

@@ -61,6 +61,50 @@ const Profile = ({ onNavigate }) => {
     }
   };
 
+  const saveUserDataToLocalStorage = (data) => {
+    // Ensure all required fields are present
+    const completeData = {
+      firstName: data.firstName || '',
+      middleName: data.middleName || '',
+      surname: data.surname || '',
+      email: data.email || '',
+      gender: data.gender || '',
+      civilStatus: data.civilStatus || '',
+      birthdate: data.birthdate || '',
+      mobileNumber: data.mobileNumber || '',
+      occupationType: data.occupationType || '',
+      street: data.street || '',
+      barangay: data.barangay || '',
+      city: data.city || '',
+      province: data.province || '',
+      address: `${data.street || ''}, ${data.barangay || ''}, ${data.city || ''}, ${data.province || ''}`.replace(/, +/g, ', ').replace(/^, |, $/g, ''),
+      age: data.age || '',
+      id: data.id || '',
+      uid: data.uid || '',
+    };
+    localStorage.setItem('userData', JSON.stringify(completeData));
+  };
+
+  const handleEditProfile = () => {
+    // Example: Open a modal or form for editing profile
+    // After editing, call saveUserDataToLocalStorage with updated data
+    // For demonstration, we'll just update age, address, and name fields
+    const updatedData = {
+      ...userData,
+      firstName: userData.firstName || 'John',
+      middleName: userData.middleName || 'Michael',
+      surname: userData.surname || 'Doe',
+      age: userData.age || '25',
+      street: userData.street || '123 Main Street',
+      barangay: userData.barangay || 'Sample Barangay',
+      city: userData.city || 'Sample City',
+      province: userData.province || 'Sample Province',
+    };
+    saveUserDataToLocalStorage(updatedData);
+    setUserData(updatedData);
+    alert('Profile updated and saved!');
+  };
+
   if (!userData) {
     return (
       <div className="profile-container">
@@ -173,7 +217,7 @@ const Profile = ({ onNavigate }) => {
           </div>
 
           <div className="profile-actions">
-            <button className="profile-edit-btn">Edit Profile</button>
+            <button className="profile-edit-btn" onClick={handleEditProfile}>Edit Profile</button>
           </div>
         </div>
       </div>

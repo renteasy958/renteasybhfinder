@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LLVerify from './llverify';
 import '../styles/llreservations.css';
 import LLNavbar from './llnavbar';
@@ -8,53 +8,38 @@ const LLReservations = ({ onNavigate }) => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
 
-  const reservations = [
-    { 
-      id: 1, 
-      name: 'John Doe',
-      address: '456 Elm Street, Barangay San Roque, City',
-      age: 22,
-      gender: 'Male',
-      civilStatus: 'Single',
-      birthdate: '2003-05-15',
-      contactNumber: '09123456789',
-      boardingHouse: 'Boarding House 1',
-      bhAddress: '123 Main St, Barangay Centro, City',
-      type: 'Male Dorm',
-      price: '₱3,500/month',
-      date: '2026-01-10'
-    },
-    { 
-      id: 2, 
-      name: 'Jane Smith',
-      address: '789 Maple Avenue, Barangay Santa Maria, City',
-      age: 24,
-      gender: 'Female',
-      civilStatus: 'Single',
-      birthdate: '2001-08-22',
-      contactNumber: '09987654321',
-      boardingHouse: 'Boarding House 2',
-      bhAddress: '456 Oak Ave, Barangay San Jose, City',
-      type: 'Female Dorm',
-      price: '₱4,000/month',
-      date: '2026-01-12'
-    },
-    { 
-      id: 3, 
-      name: 'Mike Johnson',
-      address: '321 Pine Road, Barangay Del Pilar, City',
-      age: 23,
-      gender: 'Male',
-      civilStatus: 'Single',
-      birthdate: '2002-11-30',
-      contactNumber: '09111222333',
-      boardingHouse: 'Boarding House 3',
-      bhAddress: '789 Pine Rd, Barangay Poblacion, City',
-      type: 'Co-ed',
-      price: '₱3,800/month',
-      date: '2026-01-15'
-    },
-  ];
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Get landlord ID from localStorage (assumes userData contains landlord info)
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    // Always use userId for consistency
+    const landlordId = userData.userId || userData.uid || userData.id || '';
+    console.log('DEBUG landlordId used for filtering:', landlordId);
+    if (!landlordId) {
+      setReservations([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const fetchReservations = async () => {
+      try {
+        const { collection, query, where, getDocs } = await import('firebase/firestore');
+        const { db } = await import('../../../firebase/config');
+        const q = query(collection(db, 'reservations'), where('landlordId', '==', landlordId));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // ...existing code...
+        setReservations(data);
+      } catch (error) {
+        console.error('Error fetching landlord reservations:', error);
+        setReservations([]);
+      }
+      setLoading(false);
+    };
+    fetchReservations();
+  }, []);
 
   const handleViewDetails = (reservation) => {
     setSelectedReservation(reservation);
@@ -72,12 +57,21 @@ const LLReservations = ({ onNavigate }) => {
       <LLVerify show={showVerifyModal} onClose={() => setShowVerifyModal(false)} />
       <div className="llreservations-content">
         <div className="reservations-list">
-          {reservations.map((reservation) => (
-            <div key={reservation.id} className="reservation-card">
-              <div className="reservation-name">{reservation.name}</div>
-              <button className="view-details-button" onClick={() => handleViewDetails(reservation)}>View Details</button>
-            </div>
-          ))}
+          {loading ? (
+            <div>Loading...</div>
+          ) : reservations.length === 0 ? (
+            <div>No reservations found.</div>
+          ) : (
+            reservations.map((reservation) => (
+              <div key={reservation.id} className="reservation-card">
+                      <div className="reservation-info-row" style={{ display: 'flex', alignItems: 'center' }}>
+                        <span className="reservation-tenant-name" style={{ marginRight: '24px', minWidth: '120px' }}>{reservation.tenantName || reservation.name}</span>
+                        <span className="reservation-date" style={{ flex: 1, textAlign: 'center' }}>{reservation.date}</span>
+                        <button className="view-details-button" style={{ marginLeft: '24px' }} onClick={() => handleViewDetails(reservation)}>View Details</button>
+                      </div>
+              </div>
+            ))
+          )}
         </div>
 
         {showModal && selectedReservation && (
@@ -148,7 +142,17 @@ const LLReservations = ({ onNavigate }) => {
               </div>
 
               <div className="modal-actions">
-                <button className="reject-button">Reject</button>
+                <button className="reject-button" onClick={async () => {
+                  try {
+                    const { doc, deleteDoc } = await import('firebase/firestore');
+                    const { db } = await import('../../../firebase/config');
+                    await deleteDoc(doc(db, 'reservations', selectedReservation.id));
+                  } catch (err) {
+                    alert('Failed to delete reservation from Firestore.');
+                  }
+                  setReservations(prev => prev.filter(r => r.id !== selectedReservation.id));
+                  closeModal();
+                }}>Reject</button>
                 <button className="approve-button">Approve</button>
               </div>
             </div>

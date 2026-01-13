@@ -31,6 +31,8 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onN
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const userDataForStorage = {
+          uid: userCredential.user.uid,
+          userId: userCredential.user.uid, // Ensure userId is always present
           userType: userData.userType,
           firstName: userData.firstName,
           middleName: userData.middleName,

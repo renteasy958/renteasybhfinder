@@ -24,10 +24,18 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
         if (bhDoc.exists()) {
           const bhData = { id: bhDoc.id, ...bhDoc.data() };
           setBoardingHouse(bhData);
-          // Fetch landlord info from localStorage (llprofile)
-          const storedUserData = localStorage.getItem('userData');
-          if (storedUserData) {
-            setLandlord(JSON.parse(storedUserData));
+          // Fetch landlord info from Firestore using userId (the user who added the BH)
+          if (bhData.userId) {
+            // Try users collection first, fallback to landlords if needed
+            let landlordDoc = await getDoc(doc(db, 'users', bhData.userId));
+            if (!landlordDoc.exists()) {
+              landlordDoc = await getDoc(doc(db, 'landlords', bhData.userId));
+            }
+            if (landlordDoc.exists()) {
+              setLandlord({ id: landlordDoc.id, ...landlordDoc.data() });
+            } else {
+              setLandlord(null);
+            }
           } else {
             setLandlord(null);
           }
@@ -269,7 +277,44 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
                 </div>
                 <button 
                   className="submit-btn" 
-                  onClick={() => { setShowPayment(false); setShowSuccess(true); }}
+                  onClick={async () => {
+                    if (!referenceNumber.trim()) return;
+                    try {
+                      const { addDoc, collection, Timestamp } = await import('firebase/firestore');
+                      const { db } = await import('../../../firebase/config');
+                      // Get tenant info from localStorage (assumes userData contains tenant info)
+                      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                      const reservationData = {
+                        tenantId: userData.uid || userData.id || '',
+                        tenantName: userData.firstName && userData.surname ? `${userData.firstName} ${userData.middleName || ''} ${userData.surname}`.replace(/  +/g, ' ').trim() : '',
+                        address: userData.address || `${userData.street || ''}, ${userData.barangay || ''}, ${userData.city || ''}, ${userData.province || ''}`.replace(/, +/g, ', ').replace(/^, |, $/g, ''),
+                        age: userData.age || '',
+                        gender: userData.gender || '',
+                        civilStatus: userData.civilStatus || '',
+                        birthdate: userData.birthdate || '',
+                        contactNumber: userData.mobileNumber || '',
+                        boardingHouseId: boardingHouse.id,
+                        boardingHouse: boardingHouse.name || '',
+                        bhAddress: (boardingHouse.sitio ? `${boardingHouse.sitio}, ` : '') + (boardingHouse.barangay ? `Brgy. ${boardingHouse.barangay}, ` : '') + (boardingHouse.municipality ? `${boardingHouse.municipality}, ` : '') + (boardingHouse.province ? `${boardingHouse.province}` : ''),
+                        landlordId: boardingHouse.userId || '',
+                        price: boardingHouse.price || 50,
+                        type: boardingHouse.type || '',
+                        date: new Date().toISOString().slice(0, 10),
+                        status: 'Pending',
+                        referenceNumber,
+                        createdAt: Timestamp ? Timestamp.now() : new Date(),
+                      };
+                      console.log('DEBUG reservationData:', reservationData);
+                      console.log('DEBUG boardingHouse.userId:', boardingHouse.userId);
+                      console.log('DEBUG landlordId in reservation:', reservationData.landlordId);
+                      await addDoc(collection(db, 'reservations'), reservationData);
+                    } catch (err) {
+                      alert('Failed to submit reservation. Please try again.');
+                      return;
+                    }
+                    setShowPayment(false);
+                    setShowSuccess(true);
+                  }}
                   disabled={!referenceNumber.trim()}
                 >
                   Submit
@@ -291,21 +336,20 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
             <p className="success-text">
               Your transaction is successful. Please wait for the approval of the landlord.
             </p>
-            <button 
-              className="modal-close-btn" 
-              onClick={() => { 
-                setShowModal(false); 
-                setShowPayment(false); 
-                setShowSuccess(false); 
-                setReferenceNumber(''); 
-                onNavigate('home');
-                setTimeout(() => {
-                  window.location.reload();
-                }, 100);
-              }}
-            >
-              Okay
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+              <button 
+                className="success-modal-ok-btn" 
+                onClick={() => { 
+                  setShowModal(false); 
+                  setShowPayment(false); 
+                  setShowSuccess(false); 
+                  setReferenceNumber(''); 
+                  onNavigate('home');
+                }}
+              >
+                Okay
+              </button>
+            </div>
           </div>
         </div>
       )}
