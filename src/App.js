@@ -26,11 +26,22 @@ function getInitialPage() {
   return 'login';
 }
 
+
 function App() {
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBHId, setSelectedBHId] = useState(null);
   // const [showLLVerifyModal, setShowLLVerifyModal] = useState(false);
+
+  // Always redirect to correct dashboard after refresh
+  React.useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+    if (userData && userData.userType) {
+      if (userData.userType === 'admin' && currentPage !== 'admindashboard') setCurrentPage('admindashboard');
+      if (userData.userType === 'landlord' && currentPage !== 'llhome') setCurrentPage('llhome');
+      if (userData.userType === 'tenant' && currentPage !== 'home') setCurrentPage('home');
+    }
+  }, []);
 
   // Keep currentPage in sync with user type for refresh persistence
   React.useEffect(() => {
