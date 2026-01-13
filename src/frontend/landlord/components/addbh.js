@@ -19,6 +19,7 @@ L.Icon.Default.mergeOptions({
 
 const AddBH = ({ onNavigate }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState(null); // { lat, lng }
   const [showSuccess, setShowSuccess] = useState(false);
@@ -31,6 +32,11 @@ const AddBH = ({ onNavigate }) => {
     type: '',
     price: ''
   });
+  // Get verification status from localStorage
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  // Force strict boolean check
+  const isVerified = Boolean(userData.isVerified);
+  console.log('AddBH: isVerified =', isVerified, '| userData:', userData);
 
   const amenitiesList = [
     'Wifi', 'Comfort room', 'Kitchen', 'Aircon', 'Laundry',
@@ -120,6 +126,11 @@ const AddBH = ({ onNavigate }) => {
       alert('You must be logged in to add a boarding house.');
       return;
     }
+    // Check verification status
+    if (!isVerified) {
+      setShowVerifyModal(true);
+      return;
+    }
     // Basic validation
     if (!formData.name || !formData.type || !formData.price || !location || images.length === 0) {
       alert('Please fill in all required fields, select a location, and upload at least one image.');
@@ -178,6 +189,19 @@ const AddBH = ({ onNavigate }) => {
   return (
     <div className="addbh-container">
       <LLNavbar onNavigate={onNavigate} />
+      {showVerifyModal && (
+        <div className="modal-overlay" onClick={() => setShowVerifyModal(false)}>
+          <div className="modal-content-llverify" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowVerifyModal(false)}>×</button>
+            <h2 className="modal-title">Verification Required</h2>
+            <div style={{ textAlign: 'center', padding: 24 }}>
+              <p style={{ fontWeight: 'bold', marginBottom: 12 }}>You must verify your account before you can add a boarding house.</p>
+              <p>Go to <b>Settings</b> &gt; <b>Verify Account</b> to complete verification.</p>
+              <button className="approve-button" onClick={() => { setShowVerifyModal(false); onNavigate('llprofile'); }}>Go to Settings</button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {showSuccess && (
         <div className="success-overlay">

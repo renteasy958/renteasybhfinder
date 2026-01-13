@@ -5,7 +5,9 @@ import '../styles/llhistory.css';
 import '../../admin/styles/transactionhistory.css';
 
 const LLHistory = ({ onNavigate }) => {
-  const [historyData] = useState([]);
+  const [historyData, setHistoryData] = useState(() => {
+    return JSON.parse(localStorage.getItem('llHistory') || '[]');
+  });
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   
   const getStatusColor = (status) => {

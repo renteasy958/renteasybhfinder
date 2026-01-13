@@ -53,7 +53,9 @@ const Landlords = () => {
 						return (
 							<div key={item.id} className="admin-card" onClick={() => handleCardClick(item)} style={{cursor: 'pointer'}}>
 								<span className="admin-card-title">{fullName || item.email || 'Unnamed Landlord'}</span>
-								<span className="admin-card-type">{item.boardingHouse?.name || ''}</span>
+								<span className="admin-card-status {item.status === 'verified' ? 'verified' : 'not-verified'}">
+									{item.status === 'verified' ? 'Verified' : 'Not Verified'}
+								</span>
 							</div>
 						);
 					})

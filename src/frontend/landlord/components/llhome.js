@@ -11,7 +11,8 @@ const LLHome = ({ onNavigate }) => {
   const [showAllListings, setShowAllListings] = useState(false);
   const [showAllPending, setShowAllPending] = useState(false);
   const [showAllOccupied, setShowAllOccupied] = useState(false);
-  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false); // For 'Verification Required' modal
+  const [showPaymentModal, setShowPaymentModal] = useState(false); // For 'Account Verification Payment' modal
   const [boardingHouses, setBoardingHouses] = useState([]);
   const [approvedReservations, setApprovedReservations] = useState([]);
 
@@ -76,10 +77,14 @@ const LLHome = ({ onNavigate }) => {
     return bh ? { ...bh, _reservation: res } : null;
   }).filter(Boolean);
 
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  const isVerified = Boolean(userData.isVerified);
+  console.log('LLHome: isVerified =', isVerified, '| userData:', userData);
+
   return (
     <div className="llhome-container">
-      <LLNavbar onNavigate={onNavigate} onShowVerifyModal={() => setShowVerifyModal(true)} />
-      <LLVerify show={showVerifyModal} onClose={() => setShowVerifyModal(false)} />
+      <LLNavbar onNavigate={onNavigate} onShowVerifyModal={() => setShowPaymentModal(true)} />
+      <LLVerify show={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
       <div className="llhome-content">
         <div className="stats-container">
           {/* Listings Section */}
@@ -92,7 +97,19 @@ const LLHome = ({ onNavigate }) => {
                     {showAllListings ? 'Show Less' : 'See All'}
                   </button>
                 )}
-                <button className="add-bh-button" onClick={() => onNavigate('addbh')}>+ Add Boarding House</button>
+                <button
+                  className="add-bh-button"
+                  onClick={() => {
+                    if (isVerified) {
+                      onNavigate('addbh');
+                    } else {
+                      setShowVerifyModal(true);
+                    }
+                  }}
+                  title={isVerified ? '' : 'You must verify your account first'}
+                >
+                  + Add Boarding House
+                </button>
               </div>
             </div>
             <div className="card-items-container">
@@ -239,6 +256,19 @@ const LLHome = ({ onNavigate }) => {
                     </ul>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showVerifyModal && (
+          <div className="modal-overlay" style={{zIndex: 9999, background: 'rgba(0,0,0,0.7)'}} onClick={() => setShowVerifyModal(false)}>
+            <div className="modal-content-llverify" style={{zIndex: 10000, background: '#fff'}} onClick={e => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowVerifyModal(false)}>×</button>
+              <h2 className="modal-title">Verification Required</h2>
+              <div style={{ textAlign: 'center', padding: 24 }}>
+                <p style={{ fontWeight: 'bold', marginBottom: 12, color: 'black' }}>You must verify your account before you can add a boarding house.</p>
+                <p>Go to <b>Settings</b> &gt; <b>Verify Account</b> to complete verification.</p>
               </div>
             </div>
           </div>

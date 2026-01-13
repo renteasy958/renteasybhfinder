@@ -14,6 +14,35 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onN
     setShowPassword(!showPassword);
   };
 
+  const fetchAndStoreVerificationStatus = async (userId) => {
+    try {
+      // Try landlords collection first, fallback to users
+      let snap = await getDoc(doc(db, 'landlords', userId));
+      if (!snap.exists()) {
+        snap = await getDoc(doc(db, 'users', userId));
+      }
+      if (snap.exists()) {
+        const data = snap.data();
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        userData.isVerified = Boolean(data.isVerified);
+        localStorage.setItem('userData', JSON.stringify(userData));
+        console.log('Fetched isVerified from Firestore:', userData.isVerified);
+      } else {
+        // If no user doc, force isVerified to false
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        userData.isVerified = false;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        console.log('No user doc found, set isVerified to false');
+      }
+    } catch (err) {
+      // On error, force isVerified to false
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      userData.isVerified = false;
+      localStorage.setItem('userData', JSON.stringify(userData));
+      console.log('Error fetching isVerified, set to false');
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -49,6 +78,7 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onN
           email: userData.email
         };
         localStorage.setItem('userData', JSON.stringify(userDataForStorage));
+        await fetchAndStoreVerificationStatus(userCredential.user.uid); // Fetch and store verification status
         if (userData.userType === 'admin') {
           onNavigateToAdmin();
         } else if (userData.userType === 'landlord') {
