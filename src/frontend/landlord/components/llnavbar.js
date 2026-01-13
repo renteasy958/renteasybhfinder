@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../styles/llnavbar.css';
 import { auth } from '../../../firebase/config';
 import { signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../../firebase/config';
 
 const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -13,6 +15,25 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
     gcashNumber: ''
   });
   const settingsRef = useRef(null);
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const userId = userData.userId || userData.uid || userData.id || '';
+      if (!userId) return;
+      // Try users collection first
+      let snap = await getDoc(doc(db, 'users', userId));
+      if (!snap.exists()) {
+        // Try landlords collection
+        snap = await getDoc(doc(db, 'landlords', userId));
+      }
+      if (snap.exists()) {
+        const data = snap.data();
+        setBalance(parseFloat(data.balance) || 0);
+      }
+    };
+    fetchBalance();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -82,7 +103,7 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
       </div>
 
       <div className="llnavbar-balance" onClick={() => setShowWithdrawalModal(true)}>
-        Balance: ₱<span className="balance-amount">0.00</span>
+        Balance: ₱<span className="balance-amount">{balance.toFixed(2)}</span>
       </div>
     </nav>
 

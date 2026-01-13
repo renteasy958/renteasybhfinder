@@ -27,10 +27,13 @@ const LLReservations = ({ onNavigate }) => {
       try {
         const { collection, query, where, getDocs } = await import('firebase/firestore');
         const { db } = await import('../../../firebase/config');
-        const q = query(collection(db, 'reservations'), where('landlordId', '==', landlordId));
+        const q = query(
+          collection(db, 'reservations'),
+          where('landlordId', '==', landlordId),
+          where('status', '==', 'Pending')
+        );
         const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // ...existing code...
         setReservations(data);
       } catch (error) {
         console.error('Error fetching landlord reservations:', error);
@@ -155,8 +158,9 @@ const LLReservations = ({ onNavigate }) => {
                 }}>Reject</button>
                 <button className="approve-button" onClick={async () => {
                   try {
-                    const { doc, updateDoc, getDoc } = await import('firebase/firestore');
+                    const { doc, updateDoc, getDoc, setDoc } = await import('firebase/firestore');
                     const { db } = await import('../../../firebase/config');
+                    // Update available rooms and status
                     if (selectedReservation.boardingHouseId) {
                       const bhRef = doc(db, 'boardingHouses', selectedReservation.boardingHouseId);
                       const bhSnap = await getDoc(bhRef);
@@ -170,6 +174,36 @@ const LLReservations = ({ onNavigate }) => {
                         } else {
                           await updateDoc(bhRef, { availableRooms: newRooms });
                         }
+                      }
+                    }
+                    // Add 50 pesos to landlord's balance in users or landlords collection
+                    if (selectedReservation.landlordId) {
+                      let updated = false;
+                      // Try users collection
+                      const userRef = doc(db, 'users', selectedReservation.landlordId);
+                      const userSnap = await getDoc(userRef);
+                      if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        let balance = parseFloat(userData.balance) || 0;
+                        balance += 50;
+                        await updateDoc(userRef, { balance });
+                        updated = true;
+                      }
+                      // Try landlords collection if not found in users
+                      if (!updated) {
+                        const landlordRef = doc(db, 'landlords', selectedReservation.landlordId);
+                        const landlordSnap = await getDoc(landlordRef);
+                        if (landlordSnap.exists()) {
+                          const landlordData = landlordSnap.data();
+                          let balance = parseFloat(landlordData.balance) || 0;
+                          balance += 50;
+                          await updateDoc(landlordRef, { balance });
+                          updated = true;
+                        }
+                      }
+                      // If not found in either, create in users
+                      if (!updated) {
+                        await setDoc(userRef, { balance: 50 }, { merge: true });
                       }
                     }
                     // Optionally, update reservation status to 'Approved' (if you want to track it)
