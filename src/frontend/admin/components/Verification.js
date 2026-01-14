@@ -1,63 +1,96 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/verification.css';
-
-// No sample landlord registrations
-const landlordRegistrations = [];
+import { db } from '../../../firebase/config';
+import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
 
 const Verification = () => {
+	const [requests, setRequests] = useState([]);
 	const [selected, setSelected] = useState(null);
-	const [showModal, setShowModal] = useState(false);
-	const [refNumber, setRefNumber] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState('');
 
-	const handleCardClick = (landlord) => {
-		setSelected(landlord);
-		setRefNumber(landlord.referenceNumber || '');
-		setShowModal(true);
+	useEffect(() => {
+		const fetchRequests = async () => {
+			setLoading(true);
+			try {
+				const querySnapshot = await getDocs(collection(db, 'verificationRequests'));
+				const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+				// Only show requests that are not approved or rejected
+				const pending = data.filter(r => !r.status || r.status === 'pending');
+				setRequests(pending);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchRequests();
+	}, []);
+
+	const handleApprove = async () => {
+		if (!selected) return;
+		setError('');
+		try {
+			// Update landlord in 'users' collection (main user profile)
+			const landlordUserId = selected.userId || selected.uid || selected.landlordId || selected.id;
+			const landlordUserRef = doc(db, 'users', landlordUserId);
+			await updateDoc(landlordUserRef, { isVerified: true, status: 'verified' });
+
+			// Optionally update in 'landlords' collection if you use it
+			// const landlordRef = doc(db, 'landlords', landlordUserId);
+			// await updateDoc(landlordRef, { isVerified: true, status: 'verified' });
+
+			await updateDoc(doc(db, 'verificationRequests', selected.id), { status: 'approved' });
+			setRequests(prev => prev.filter(r => r.id !== selected.id));
+			setSelected(null);
+		} catch (err) {
+			setError(err.message);
+		}
 	};
 
-	const closeModal = () => {
-		setShowModal(false);
-		setSelected(null);
-		setRefNumber('');
+	const handleReject = async () => {
+		if (!selected) return;
+		setError('');
+		try {
+			await updateDoc(doc(db, 'verificationRequests', selected.id), { status: 'rejected' });
+			setRequests(prev => prev.filter(r => r.id !== selected.id));
+			setSelected(null);
+		} catch (err) {
+			setError(err.message);
+		}
 	};
 
 	return (
-		<div className="admin-page">
-			<div className="admin-cards-list">
-				{landlordRegistrations.length === 0 ? (
-					<p style={{textAlign: 'center', width: '100%'}}>No landlord verifications found</p>
-				) : (
-					landlordRegistrations.map((landlord) => (
-						<div key={landlord.id} className="admin-card" onClick={() => handleCardClick(landlord)}>
-							<span className="admin-card-title">{landlord.name}</span>
-							<span className="admin-card-status not-verified">{landlord.status}</span>
-						</div>
-					))
-				)}
+		<div className="verification-page">
+			<h2>Landlord Verification Requests</h2>
+			{loading ? <div>Loading...</div> : null}
+			{error && <div style={{color:'red',marginBottom:'12px'}}>{error}</div>}
+			<div className="verification-cards">
+				{requests.map(req => (
+					<div className="verification-card" key={req.id} onClick={() => setSelected(req)}>
+						<div className="verification-card-name">{req.name}</div>
+					</div>
+				))}
 			</div>
-					{showModal && selected && (
-						<div className="modal-overlay" onClick={closeModal}>
-							<div className="modal-content-verification" onClick={e => e.stopPropagation()}>
-								<button className="modal-close" onClick={closeModal}>×</button>
-								<h2>Landlord Information</h2>
-								<div className="modal-info-row"><span className="modal-label">Name:</span> {selected.name}</div>
-								<div className="modal-info-row"><span className="modal-label">Civil Status:</span> {selected.civilStatus}</div>
-								<div className="modal-info-row"><span className="modal-label">Gender:</span> {selected.gender}</div>
-								<div className="modal-info-row"><span className="modal-label">Birthdate:</span> {selected.birthdate}</div>
-								<div className="modal-info-row"><span className="modal-label">Address:</span> {selected.address.street}, {selected.address.barangay}, {selected.address.city}, {selected.address.province}</div>
-								<div className="modal-info-row"><span className="modal-label">Mobile Number:</span> {selected.mobileNumber}</div>
-								<div className="modal-info-row"><span className="modal-label">Email:</span> {selected.email}</div>
-											<div className="modal-info-row"><span className="modal-label">Reference Number:</span>
-												  <input type="text" value={refNumber} readOnly className="modal-ref-input" />
-											</div>
-											<div className="modal-actions">
-												<button className="modal-btn reject">Reject</button>
-												<button className="modal-btn approve">Approve</button>
-											</div>
-							</div>
+			{selected && (
+				<div className="verification-modal-overlay" onClick={() => setSelected(null)}>
+					<div className="verification-modal" onClick={e => e.stopPropagation()}>
+						<button className="verification-modal-close" onClick={() => setSelected(null)}>&times;</button>
+						<h3 style={{textAlign: 'left'}}>Tenant Information</h3>
+						<div style={{textAlign: 'left'}}><strong>Name:</strong> {selected.name || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Address:</strong> {selected.address || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Age:</strong> {selected.age || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Gender:</strong> {selected.gender || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Birthdate:</strong> {selected.birthdate || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Civil Status:</strong> {selected.civilStatus || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Boarding House Name:</strong> {selected.boardingHouseName || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Boarding House Address:</strong> {selected.boardingHouseAddress || 'N/A'}</div>
+						<div style={{textAlign: 'left'}}><strong>Reference Number:</strong> {selected.referenceNumber || 'N/A'}</div>
+						<div style={{marginTop: '24px', display: 'flex', gap: '16px'}}>
+							<button className="verification-modal-approve" onClick={handleApprove}>Approve</button>
+							<button className="verification-modal-reject" onClick={handleReject}>Reject</button>
 						</div>
-					)}
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

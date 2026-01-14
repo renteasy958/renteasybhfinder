@@ -24,6 +24,23 @@ const LLHome = ({ onNavigate }) => {
         setApprovedReservations([]);
         return;
       }
+
+      // Fetch and update isVerified status from Firestore
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          const localUserData = JSON.parse(localStorage.getItem('userData') || '{}');
+          localUserData.isVerified = Boolean(userData.isVerified);
+          localUserData.status = userData.status;
+          localStorage.setItem('userData', JSON.stringify(localUserData));
+        }
+      } catch (err) {
+        console.error('Error updating isVerified from Firestore:', err);
+      }
+
       // Fetch boarding houses
       const bhQ = query(collection(db, 'boardingHouses'), where('userId', '==', user.uid));
       const bhSnapshot = await getDocs(bhQ);

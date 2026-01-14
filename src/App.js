@@ -16,8 +16,6 @@ import AdminDashboard from './frontend/admin/AdminDashboard';
 // import LLSettings from './frontend/landlord/components/llsettings';
 import History from './frontend/tenant/components/history';
 
-
-
 function getInitialPage() {
   const userData = JSON.parse(localStorage.getItem('userData') || 'null');
   if (userData && userData.userType) {

@@ -20,6 +20,13 @@ const LLVerify = ({ show, onClose }) => {
         date: new Date().toLocaleString(),
         referenceNumber: referenceNumber.trim(),
         userId: userData.uid || userData.userId || '',
+        address: userData.address || userData.street || '',
+        age: userData.age || '',
+        gender: userData.gender || '',
+        birthdate: userData.birthdate || '',
+        civilStatus: userData.civilStatus || '',
+        boardingHouseName: userData.boardingHouseName || userData.boardinghouseName || '',
+        boardingHouseAddress: userData.boardingHouseAddress || userData.boardinghouseAddress || '',
       });
       // Add to local history for demo
       const history = JSON.parse(localStorage.getItem('llHistory') || '[]');

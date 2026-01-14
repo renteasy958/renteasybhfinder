@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../styles/llprofile.css';
 import LLNavbar from './llnavbar';
 import LLVerify from './llverify';
+import { db } from '../../../firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 
 const LLProfile = ({ onNavigate }) => {
   const [userData, setUserData] = useState(null);
@@ -10,24 +12,22 @@ const LLProfile = ({ onNavigate }) => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    // Get landlord data from localStorage (or fetch from Firebase)
+    // Get landlord data from Firestore using userData from localStorage
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
-      setUserData(JSON.parse(storedUserData));
-    } else {
-      // Dummy data for landlord
-      setUserData({
-        firstName: 'Landlord',
-        middleName: '',
-        surname: 'Sample',
-        email: 'landlord@example.com',
-        mobileNumber: '+63 900 000 0000',
-        company: 'Sample Realty',
-        street: '456 Realty Ave',
-        barangay: 'Business District',
-        city: 'Metro City',
-        province: 'Metro Province'
-      });
+      const parsed = JSON.parse(storedUserData);
+      const landlordId = parsed.uid || parsed.userId || parsed.id;
+      if (landlordId) {
+        getDoc(doc(db, 'landlords', landlordId)).then(snap => {
+          if (snap.exists()) {
+            setUserData({ ...snap.data(), ...parsed });
+          } else {
+            setUserData(parsed); // fallback to localStorage if not found in Firestore
+          }
+        });
+      } else {
+        setUserData(parsed);
+      }
     }
     const storedProfilePic = localStorage.getItem('llProfilePicture');
     if (storedProfilePic) {
