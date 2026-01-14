@@ -102,8 +102,20 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
         <button onClick={() => onNavigate('llhistory')} className={`llnavbar-center-link${currentPage === 'llhistory' ? ' llnavbar-center-link-active' : ''}`}>History</button>
       </div>
 
-      <div className="llnavbar-balance" onClick={() => setShowWithdrawalModal(true)}>
-        Balance: ₱<span className="balance-amount">{balance.toFixed(2)}</span>
+      {/* Landlord status before balance */}
+      <div className="llnavbar-status-balance-container" style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+        <span className="llnavbar-status" style={{ color: (() => {
+          const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+          return userData.status === 'verified' || userData.isVerified ? 'green' : 'red';
+        })(), fontWeight: 'bold' }}>
+          {(() => {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            return userData.status === 'verified' || userData.isVerified ? 'Verified' : 'Not Verified';
+          })()}
+        </span>
+        <div className="llnavbar-balance" onClick={() => setShowWithdrawalModal(true)}>
+          Balance: ₱<span className="balance-amount">{balance.toFixed(2)}</span>
+        </div>
       </div>
     </nav>
 

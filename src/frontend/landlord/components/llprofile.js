@@ -118,6 +118,7 @@ const LLProfile = ({ onNavigate }) => {
         </div>
 
         <div className="profile-details">
+
           <h2 className="profile-section-title">Landlord Information</h2>
           <div className="profile-info-grid">
             <div className="profile-info-item">
@@ -137,8 +138,20 @@ const LLProfile = ({ onNavigate }) => {
               <p>{userData.mobileNumber}</p>
             </div>
             <div className="profile-info-item">
-              <label>Company</label>
-              <p>{userData.company || 'N/A'}</p>
+              <label>Civil Status</label>
+              <p>{userData.civilStatus || 'N/A'}</p>
+            </div>
+            <div className="profile-info-item">
+              <label>Gender</label>
+              <p>{userData.gender || 'N/A'}</p>
+            </div>
+            <div className="profile-info-item">
+              <label>Age</label>
+              <p>{userData.age || 'N/A'}</p>
+            </div>
+            <div className="profile-info-item">
+              <label>Birthdate</label>
+              <p>{userData.birthdate || 'N/A'}</p>
             </div>
           </div>
 
