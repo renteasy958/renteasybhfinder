@@ -96,12 +96,32 @@ const Requests = () => {
             <button
               style={{ background: '#22c55e', color: '#fff', padding: '8px 24px', border: 'none', borderRadius: '6px', fontWeight: 'bold', marginRight: '12px' }}
               onClick={async () => {
-                // Mark as completed in transaction history
+                // Mark as completed in transaction history and deduct landlord balance
                 try {
+                  const { updateDoc, doc, getDoc } = await import('firebase/firestore');
                   // Update status in requests collection
-                  await import('firebase/firestore').then(({ updateDoc, doc }) =>
-                    updateDoc(doc(db, 'requests', selected.id), { status: 'Completed', refNumber: selected.refNumber || '' })
-                  );
+                  await updateDoc(doc(db, 'requests', selected.id), { status: 'Completed', refNumber: selected.refNumber || '' });
+
+                  // Deduct balance from landlord
+                  const landlordId = selected.userId;
+                  if (landlordId) {
+                    // Try users collection first
+                    let landlordRef = doc(db, 'users', landlordId);
+                    let landlordSnap = await getDoc(landlordRef);
+                    if (!landlordSnap.exists()) {
+                      // Try landlords collection
+                      landlordRef = doc(db, 'landlords', landlordId);
+                      landlordSnap = await getDoc(landlordRef);
+                    }
+                    if (landlordSnap.exists()) {
+                      const data = landlordSnap.data();
+                      let balance = parseFloat(data.balance) || 0;
+                      const amount = parseFloat(selected.amount) || 0;
+                      balance = Math.max(0, balance - amount);
+                      await updateDoc(landlordRef, { balance });
+                    }
+                  }
+
                   // Remove from requests list in UI
                   setRequests(prev => prev.filter(r => r.id !== selected.id));
                   setShowModal(false);

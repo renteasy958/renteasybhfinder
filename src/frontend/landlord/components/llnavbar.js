@@ -137,16 +137,25 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
               <button className="llsettings-dropdown-item" onClick={() => onNavigate('llprofile')}>
                 <span>Profile</span>
               </button>
-              <button className="llsettings-dropdown-item" onClick={onShowVerifyModal}>
-                <span>Verify Account</span>
-              </button>
+              {(() => {
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                if (!(userData.status === 'verified' || userData.isVerified)) {
+                  return (
+                    <button className="llsettings-dropdown-item" onClick={onShowVerifyModal}>
+                      <span>Verify Account</span>
+                    </button>
+                  );
+                  // Only show if not verified
+                }
+                return null;
+              })()}
               <button className="llsettings-dropdown-item" onClick={handleLogout}>
                 <span>Logout</span>
               </button>
             </div>
           )}
         </div>
-        <button onClick={() => onNavigate('llhistory')} className={`llnavbar-center-link${currentPage === 'llhistory' ? ' llnavbar-center-link-active' : ''}`}>History</button>
+        <button onClick={() => onNavigate('llhistory')} className={`llnavbar-center-link${currentPage === 'llhistory' ? ' llnavbar-center-link-active' : ''}`}>Transaction History</button>
       </div>
 
       {/* Landlord status before balance */}

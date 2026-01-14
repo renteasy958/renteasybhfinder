@@ -8,6 +8,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 const LLHome = ({ onNavigate }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBH, setSelectedBH] = useState(null);
+  const [selectedReservation, setSelectedReservation] = useState(null);
   const [showAllListings, setShowAllListings] = useState(false);
   const [showAllPending, setShowAllPending] = useState(false);
   const [showAllOccupied, setShowAllOccupied] = useState(false);
@@ -15,6 +16,7 @@ const LLHome = ({ onNavigate }) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false); // For 'Account Verification Payment' modal
   const [boardingHouses, setBoardingHouses] = useState([]);
   const [approvedReservations, setApprovedReservations] = useState([]);
+  const [tenantDetails, setTenantDetails] = useState(null);
 
   useEffect(() => {
     const fetchBoardingHousesAndReservations = async () => {
@@ -75,14 +77,39 @@ const LLHome = ({ onNavigate }) => {
     fetchBoardingHousesAndReservations();
   }, []);
 
-  const handleCardClick = (bh) => {
-    setSelectedBH(bh);
-    setShowModal(true);
+  const handleCardClick = async (bh) => {
+    if (bh._reservation) {
+      setSelectedReservation(bh._reservation);
+      // Fetch tenant details from users collection
+      const tenantId = bh._reservation.tenantId;
+      if (tenantId) {
+        try {
+          const { doc, getDoc } = await import('firebase/firestore');
+          const userRef = doc(db, 'users', tenantId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setTenantDetails(userSnap.data());
+          } else {
+            setTenantDetails(null);
+          }
+        } catch (err) {
+          setTenantDetails(null);
+        }
+      } else {
+        setTenantDetails(null);
+      }
+      setShowModal(true);
+    } else {
+      setSelectedBH(bh);
+      setShowModal(true);
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedBH(null);
+    setSelectedReservation(null);
+    setTenantDetails(null);
   };
 
   // Filter by status
@@ -226,11 +253,36 @@ const LLHome = ({ onNavigate }) => {
           </div>
         </div>
 
-        {showModal && selectedBH && (
+        {showModal && selectedReservation && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content-llhome" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'left' }}>
+              <button className="modal-close" onClick={closeModal}>×</button>
+              <h2 className="modal-title">Tenant Details</h2>
+              <div className="modal-section">
+                <h3 className="section-title">Tenant Information</h3>
+                <div className="info-grid">
+                  <div className="info-item">
+                    <span className="info-label">Full Name:</span>
+                    <span className="info-value">
+                      {tenantDetails && (tenantDetails.firstName || tenantDetails.middleName || tenantDetails.lastName)
+                        ? `${tenantDetails.firstName || ''} ${tenantDetails.middleName || ''} ${tenantDetails.lastName || ''}`.replace(/ +/g, ' ').trim()
+                        : (selectedReservation.name || selectedReservation.tenantName || 'N/A')}
+                    </span>
+                  </div>
+                  <div className="info-item"><span className="info-label">Address:</span> <span className="info-value">{selectedReservation.address || 'N/A'}</span></div>
+                  <div className="info-item"><span className="info-label">Gender:</span> <span className="info-value">{selectedReservation.gender || 'N/A'}</span></div>
+                  <div className="info-item"><span className="info-label">Civil Status:</span> <span className="info-value">{selectedReservation.civilStatus || 'N/A'}</span></div>
+                  <div className="info-item"><span className="info-label">Birthdate:</span> <span className="info-value">{selectedReservation.birthdate || 'N/A'}</span></div>
+                  <div className="info-item"><span className="info-label">Contact Number:</span> <span className="info-value">{selectedReservation.contactNumber || 'N/A'}</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {showModal && !selectedReservation && selectedBH && (
           <div className="modal-overlay" onClick={closeModal}>
             <div className="modal-content-llhome" onClick={(e) => e.stopPropagation()}>
               <button className="modal-close" onClick={closeModal}>×</button>
-              
               <div className="modal-images">
                 <div className="modal-main-image"></div>
                 <div className="modal-thumbnail-container">
@@ -239,7 +291,6 @@ const LLHome = ({ onNavigate }) => {
                   ))}
                 </div>
               </div>
-
               <div className="modal-details">
                 <h2 className="modal-bh-name">{selectedBH.name}</h2>
                 <div className="modal-info-row">
@@ -254,7 +305,6 @@ const LLHome = ({ onNavigate }) => {
                   <span className="modal-label">Price:</span>
                   <span className="modal-value modal-price">{selectedBH.price}</span>
                 </div>
-
                 <div className="modal-amenities">
                   <div className="amenities-section">
                     <h3 className="amenities-title">Included Amenities</h3>
