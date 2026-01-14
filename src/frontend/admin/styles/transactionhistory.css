@@ -90,23 +90,27 @@
   display: inline-block;
 }
 
+/* Compact status styles */
 .admin-page.transaction-history-page .admin-card-status {
   font-weight: 600;
   font-size: 15px;
-  min-width: 100px;
+  min-width: 40px;
+  padding: 2px 6px;
+  border-radius: 8px;
   display: inline-block;
 }
 .admin-page.transaction-history-page .admin-card-status.pending {
   color: #ef4444;
+  background: #fff3f3;
 }
+.admin-page.transaction-history-page .admin-card-status.completed,
 .admin-page.transaction-history-page .admin-card-status.verified {
   color: #22c55e;
-}
-.admin-page.transaction-history-page .admin-card-status.completed {
-  color: #22c55e;
+  background: #e6fbe6;
 }
 .admin-page.transaction-history-page .admin-card-status.rejected {
   color: #ef4444;
+  background: #fff3f3;
 }
 
 .admin-page.transaction-history-page .admin-card-amount {

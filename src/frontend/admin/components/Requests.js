@@ -68,9 +68,14 @@ const Requests = () => {
           <p style={{textAlign: 'center', width: '100%'}}>No requests found</p>
         ) : (
           filtered.map((item) => (
-            <div key={item.id} className="admin-card">
+            <div
+              key={item.id}
+              className="admin-card"
+              onClick={() => handleCardClick(item)}
+              style={{ cursor: 'pointer' }}
+            >
               <span className="admin-card-title">{item.request}</span>
-              <span className="admin-card-type">{item.user}</span>
+              <span className="admin-card-type">{item.tenantName || item.landlordName || item.name || item.user}</span>
               <span className="admin-card-date">{item.date && item.date.toDate ? item.date.toDate().toLocaleString() : ''}</span>
               <span className={item.status === 'Pending' ? 'admin-card-status pending' : 'admin-card-status completed'}>{item.status}</span>
             </div>
@@ -81,12 +86,31 @@ const Requests = () => {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content-requests" onClick={e => e.stopPropagation()}>
             <h2>Request Details</h2>
-            <div><b>Type:</b> {selected.request}</div>
-            <div><b>User:</b> {selected.user}</div>
-            <div><b>Amount:</b> {selected.amount}</div>
-            <div><b>Status:</b> {selected.status}</div>
-            <div><b>Date:</b> {selected.date && selected.date.toDate ? selected.date.toDate().toLocaleString() : ''}</div>
-            <button onClick={closeModal}>Close</button>
+            <div><b>Name:</b> {selected.tenantName || selected.landlordName || selected.name || selected.user}</div>
+            <div><b>GCash Number:</b> {selected.gcashNumber || '-'}</div>
+            <div><b>Amount:</b> ₱{selected.amount}</div>
+            <div style={{ margin: '16px 0' }}>
+              <label htmlFor="refNumber"><b>Reference Number:</b></label>
+              <input id="refNumber" type="text" placeholder="Enter reference number" style={{ width: '100%', padding: '8px', marginTop: '6px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #ccc' }} value={selected.refNumber || ''} onChange={e => setSelected({ ...selected, refNumber: e.target.value })} />
+            </div>
+            <button
+              style={{ background: '#22c55e', color: '#fff', padding: '8px 24px', border: 'none', borderRadius: '6px', fontWeight: 'bold', marginRight: '12px' }}
+              onClick={async () => {
+                // Mark as completed in transaction history
+                try {
+                  // Update status in requests collection
+                  await import('firebase/firestore').then(({ updateDoc, doc }) =>
+                    updateDoc(doc(db, 'requests', selected.id), { status: 'Completed', refNumber: selected.refNumber || '' })
+                  );
+                  // Remove from requests list in UI
+                  setRequests(prev => prev.filter(r => r.id !== selected.id));
+                  setShowModal(false);
+                } catch (err) {
+                  alert('Failed to complete request.');
+                }
+              }}
+            >Submit</button>
+            <button onClick={closeModal} style={{ background: '#eee', color: '#333', padding: '8px 24px', border: 'none', borderRadius: '6px', fontWeight: 'bold' }}>Close</button>
           </div>
         </div>
       )}

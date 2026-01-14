@@ -29,14 +29,21 @@ const TransactionHistory = () => {
 	const [loading, setLoading] = useState(true);
 
 	const handleDelete = async (item) => {
-		if (item.type === 'landlord_withdrawal') {
-			if (!window.confirm('Delete this withdrawal transaction?')) return;
-			try {
-				await deleteDoc(firestoreDoc(db, 'requests', item.id));
-				setTransactions(prev => prev.filter(t => t.id !== item.id));
-			} catch (err) {
-				alert('Failed to delete transaction.');
-			}
+		let collectionName = '';
+		if (item.type === 'tenant_payment') {
+			collectionName = 'reservations';
+		} else if (item.type === 'verification_payment') {
+			collectionName = 'verificationRequests';
+		} else if (item.type === 'landlord_withdrawal') {
+			collectionName = 'requests';
+		}
+		if (!collectionName) return;
+		if (!window.confirm('Delete this transaction?')) return;
+		try {
+			await deleteDoc(firestoreDoc(db, collectionName, item.id));
+			setTransactions(prev => prev.filter(t => t.id !== item.id));
+		} catch (err) {
+			alert('Failed to delete transaction.');
 		}
 	};
 
@@ -71,34 +78,35 @@ const TransactionHistory = () => {
 					};
 				});
 
-								// Fetch landlord withdrawal requests from 'requests' collection
-								const requestsSnapshot = await getDocs(
-									query(collection(db, 'requests'))
-								);
-								const withdrawalTransactions = requestsSnapshot.docs
-									.map(doc => {
-										const data = doc.data();
-										if (data.label === 'Landlord' && data.request === 'Withdrawal Request') {
-											return {
-												id: doc.id,
-												type: 'landlord_withdrawal',
-												user: data.name || data.user || data.userId || '',
-												date: data.date && data.date.toDate ? data.date.toDate() : (data.date || ''),
-												amount: data.amount,
-												status: data.status || 'Pending',
-											};
-										}
-										return null;
-									})
-									.filter(Boolean);
+				// Fetch landlord withdrawal requests from 'requests' collection
+				const requestsSnapshot = await getDocs(
+					query(collection(db, 'requests'))
+				);
+				const withdrawalTransactions = requestsSnapshot.docs
+					.map(doc => {
+						const data = doc.data();
+						if (data.label === 'Landlord' && data.request === 'Withdrawal Request') {
+							return {
+								id: doc.id,
+								type: 'landlord_withdrawal',
+								user: data.name || data.user || data.userId || '',
+								date: data.date && data.date.toDate ? data.date.toDate() : (data.date || ''),
+								amount: data.amount,
+								status: data.status || 'Pending',
+								refNumber: data.refNumber || '',
+							};
+						}
+						return null;
+					})
+					.filter(Boolean);
 
-								// Sort by date/time descending (most recent first)
-								const allTransactions = [...tenantPayments, ...landlordPayments, ...withdrawalTransactions].sort((a, b) => {
-									const dateA = a.date instanceof Date ? a.date : new Date(a.date);
-									const dateB = b.date instanceof Date ? b.date : new Date(b.date);
-									return dateB - dateA;
-								});
-								setTransactions(allTransactions);
+				// Sort by date/time descending (most recent first)
+				const allTransactions = [...tenantPayments, ...landlordPayments, ...withdrawalTransactions].sort((a, b) => {
+					const dateA = a.date instanceof Date ? a.date : new Date(a.date);
+					const dateB = b.date instanceof Date ? b.date : new Date(b.date);
+					return dateB - dateA;
+				});
+				setTransactions(allTransactions);
 			} catch (error) {
 				console.error('Error fetching transactions:', error);
 				setTransactions([]);
@@ -125,13 +133,23 @@ const TransactionHistory = () => {
 					<p style={{textAlign: 'center', width: '100%'}}>No transaction history found</p>
 				) : (
 					transactions.map((item) => (
-						<div key={item.id} className="admin-card">
-							<span className="admin-card-title">
-								{item.type === 'tenant_payment' || item.category === 'tenant_payment' ? 'Tenant Payment' :
-								 item.type === 'verification_payment' || item.category === 'verification_payment' ? 'Landlord Verification Payment' :
-								 item.type === 'landlord_withdrawal' ? 'Landlord Withdrawal' :
-								 item.transaction || item.type}
-							</span>
+										<div key={item.id} className="admin-card">
+												<span className="admin-card-title" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+													<button
+														className="admin-card-delete-btn"
+														title="Delete"
+														onClick={() => handleDelete(item)}
+														style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center' }}
+													>
+														<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path d="M6 6L14 14M6 14L14 6" stroke="#dc3545" strokeWidth="2" strokeLinecap="round"/>
+														</svg>
+													</button>
+													{item.type === 'tenant_payment' || item.category === 'tenant_payment' ? 'Tenant Payment' :
+														item.type === 'verification_payment' || item.category === 'verification_payment' ? 'Landlord Verification Payment' :
+														item.type === 'landlord_withdrawal' ? 'Landlord Withdrawal' :
+														item.transaction || item.type}
+												</span>
 							<span className="admin-card-type">{item.user}</span>
 														<span className="admin-card-date">{
 															item.date instanceof Date
@@ -139,7 +157,12 @@ const TransactionHistory = () => {
 																: item.date
 														}</span>
 							<span className="admin-card-amount">{item.amount ? `₱${item.amount}` : ''}</span>
-							<span className={item.status === 'Pending' ? 'admin-card-status pending' : 'admin-card-status completed'}>{item.status}</span>
+														<span className={item.status === 'Pending' ? 'admin-card-status pending' : 'admin-card-status completed'}>
+															{item.status}
+															{item.type === 'landlord_withdrawal' && item.status === 'Completed' && item.refNumber ? (
+																<span style={{ display: 'block', fontSize: '0.9em', color: '#22c55e', marginTop: '2px' }}>Ref#: {item.refNumber}</span>
+															) : null}
+														</span>
 						</div>
 					))
 				)}
