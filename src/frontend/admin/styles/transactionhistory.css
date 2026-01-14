@@ -1,3 +1,21 @@
+/* Delete icon button for transaction history */
+.admin-page.transaction-history-page .admin-card-delete-btn {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+}
+
+.admin-page.transaction-history-page .admin-card-delete-btn svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  stroke: #dc3545;
+}
 .admin-page {
   /* Add specific styles for the Transaction History page here */
   padding: 32px;

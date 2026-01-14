@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Verification from './Verification';
 import PendingApproval from './PendingApproval';
-import Requests from './Requests';
 import TransactionHistory from './TransactionHistory';
 import Landlords from './Landlords';
 import Tenants from './Tenants';
@@ -19,8 +18,6 @@ const AdminDashboard = () => {
         return <Verification />;
       case 'pending':
         return <PendingApproval />;
-      case 'requests':
-        return <Requests />;
       case 'transactions':
         return <TransactionHistory />;
       case 'landlords':

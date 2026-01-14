@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../styles/llnavbar.css';
 import { auth } from '../../../firebase/config';
 import { signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../firebase/config';
 
 const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
@@ -46,16 +46,63 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
     }
   };
 
+  const [withdrawalError, setWithdrawalError] = useState('');
   const handleWithdrawalChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'amount') {
+      // Only allow numbers less than or equal to balance
+      const numValue = parseFloat(value);
+      if (numValue > balance) {
+        setWithdrawalError('Amount cannot exceed current balance.');
+      } else if (numValue < 0) {
+        setWithdrawalError('Amount cannot be negative.');
+      } else {
+        setWithdrawalError('');
+      }
+    } else if (name === 'gcashNumber') {
+      // Only allow 11 digit numbers
+      if (!/^\d{0,11}$/.test(value)) {
+        return; // Prevent entering more than 11 digits or non-numeric
+      }
+      if (value.length > 0 && value.length !== 11) {
+        setWithdrawalError('GCash number must be exactly 11 digits.');
+      } else {
+        setWithdrawalError('');
+      }
+    }
     setWithdrawalData({ ...withdrawalData, [name]: value });
   };
 
-  const handleWithdrawalSubmit = () => {
-    console.log('Withdrawal request:', withdrawalData);
+  const handleWithdrawalSubmit = async () => {
+    const amount = parseFloat(withdrawalData.amount);
+    if (isNaN(amount) || amount > balance || amount < 0) {
+      setWithdrawalError('Please enter a valid amount less than or equal to your balance.');
+      return;
+    }
+    if (!withdrawalData.gcashNumber || withdrawalData.gcashNumber.length !== 11) {
+      setWithdrawalError('GCash number must be exactly 11 digits.');
+      return;
+    }
+    setWithdrawalError('');
+    // Save withdrawal request to Firestore for admin
+    try {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      await addDoc(collection(db, 'requests'), {
+        label: 'Landlord',
+        request: 'Withdrawal Request',
+        user: userData.fullName || userData.name || userData.email || userData.userId || 'Unknown',
+        userId: userData.userId || userData.uid || userData.id || '',
+        amount: amount,
+        gcashNumber: withdrawalData.gcashNumber,
+        status: 'Pending',
+        date: serverTimestamp(),
+      });
+    } catch (err) {
+      setWithdrawalError('Failed to submit withdrawal request. Please try again.');
+      return;
+    }
     setShowWithdrawalModal(false);
     setShowSuccess(true);
-    
     setTimeout(() => {
       setShowSuccess(false);
       setWithdrawalData({ amount: '', gcashNumber: '' });
@@ -135,7 +182,12 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
                 value={withdrawalData.amount}
                 onChange={handleWithdrawalChange}
                 placeholder="Enter amount"
+                min="0"
+                max={balance}
               />
+              {withdrawalError && (
+                <div style={{ color: 'red', fontSize: '0.9em', marginTop: '4px' }}>{withdrawalError}</div>
+              )}
             </div>
             <div className="form-group">
               <label>GCash Number</label>
@@ -145,9 +197,28 @@ const LLNavbar = ({ onNavigate, currentPage, onShowVerifyModal }) => {
                 value={withdrawalData.gcashNumber}
                 onChange={handleWithdrawalChange}
                 placeholder="Enter GCash number"
+                maxLength="11"
+                pattern="\d{11}"
+                inputMode="numeric"
               />
+              {withdrawalData.gcashNumber && withdrawalData.gcashNumber.length !== 11 && (
+                <div style={{ color: 'red', fontSize: '0.9em', marginTop: '4px' }}>
+                  GCash number must be exactly 11 digits.
+                </div>
+              )}
             </div>
-            <button className="submit-btn" onClick={handleWithdrawalSubmit}>
+            <button
+              className="submit-btn"
+              onClick={handleWithdrawalSubmit}
+              disabled={
+                withdrawalError ||
+                !withdrawalData.amount ||
+                parseFloat(withdrawalData.amount) > balance ||
+                parseFloat(withdrawalData.amount) <= 0 ||
+                !withdrawalData.gcashNumber ||
+                withdrawalData.gcashNumber.length !== 11
+              }
+            >
               Submit
             </button>
           </div>

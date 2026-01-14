@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Verification from './components/Verification';
 import PendingApproval from './components/PendingApproval';
-import Requests from './components/Requests';
 import TransactionHistory from './components/TransactionHistory';
 import Landlords from './components/Landlords';
 import Tenants from './components/Tenants';
 import BoardingHouses from './components/BoardingHouses';
+import Requests from './components/Requests';
 import './styles/sidebar.css';
 import './styles/admin.css';
 
@@ -19,8 +19,6 @@ const AdminDashboard = () => {
         return <Verification />;
       case 'pending':
         return <PendingApproval />;
-      case 'requests':
-        return <Requests />;
       case 'transactions':
         return <TransactionHistory />;
       case 'landlords':
@@ -29,6 +27,8 @@ const AdminDashboard = () => {
         return <Tenants />;
       case 'boardinghouses':
         return <BoardingHouses />;
+      case 'requests':
+        return <Requests />;
       default:
         return null;
     }
