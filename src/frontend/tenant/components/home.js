@@ -40,10 +40,15 @@ const Home = ({ onNavigateToBHDetails, onNavigate, onSearchResults }) => {
       <Navbar
         onNavigate={onNavigate}
         onSearch={query => {
-          // Simple search: filter by name or address
+          // Ensure query is a string before using toLowerCase
+          const safeQuery = typeof query === 'string' ? query.toLowerCase() : '';
           const results = listings.filter(house =>
-            house.name.toLowerCase().includes(query.toLowerCase()) ||
-            house.address.toLowerCase().includes(query.toLowerCase())
+            (house.name && house.name.toLowerCase().includes(safeQuery)) ||
+            (house.address && house.address.toLowerCase().includes(safeQuery)) ||
+            (house.sitio && house.sitio.toLowerCase().includes(safeQuery)) ||
+            (house.barangay && house.barangay.toLowerCase().includes(safeQuery)) ||
+            (house.municipality && house.municipality.toLowerCase().includes(safeQuery)) ||
+            (house.province && house.province.toLowerCase().includes(safeQuery))
           );
           onSearchResults(results);
         }}

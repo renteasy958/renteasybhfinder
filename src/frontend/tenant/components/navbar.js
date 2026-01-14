@@ -24,7 +24,7 @@ const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
       await signOut(auth);
       localStorage.removeItem('userData');
       localStorage.removeItem('currentPage');
-      localStorage.removeItem('likedBoardingHouses');
+      // Removed likedBoardingHouses logic
       onNavigate('login');
     } catch (error) {
       console.error('Logout error:', error);
@@ -55,7 +55,23 @@ const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            if (onSearch) onSearch(searchValue);
+            // Get all boarding houses from localStorage
+            const allHouses = JSON.parse(localStorage.getItem('boardingHouses') || '[]');
+            const query = (searchValue || '').toLowerCase();
+            // Only show relevant results
+            const results = allHouses.filter(house => {
+              return (
+                (house.name && house.name.toLowerCase().includes(query)) ||
+                (house.address && house.address.toLowerCase().includes(query)) ||
+                (house.sitio && house.sitio.toLowerCase().includes(query)) ||
+                (house.barangay && house.barangay.toLowerCase().includes(query)) ||
+                (house.municipality && house.municipality.toLowerCase().includes(query)) ||
+                (house.province && house.province.toLowerCase().includes(query))
+              );
+            });
+            // Only pass results if query is not empty
+            if (onSearch) onSearch(query ? results : []);
+            if (onNavigate) onNavigate('searchresults');
           }}
           style={{ display: 'flex', alignItems: 'center' }}
         >

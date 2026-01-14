@@ -92,7 +92,7 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
       localStorage.setItem('likedBoardingHouses', JSON.stringify(updated));
       setIsLiked(false);
     } else {
-      likedBoardingHouses.push({ id: boardingHouse.id, name: boardingHouse.name });
+      likedBoardingHouses.push({ ...boardingHouse });
       localStorage.setItem('likedBoardingHouses', JSON.stringify(likedBoardingHouses));
       setIsLiked(true);
     }
@@ -142,28 +142,28 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
               </div>
             )}
           </div>
-          <div className="bh-name-container">
-            <div className="bh-name-header">
-              <h1 className="bh-name">
+          <div className="bh-name-container" style={{ textAlign: 'left' }}>
+            <div className="bh-name-header" style={{ textAlign: 'left' }}>
+              <h1 className="bh-name" style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
                 {boardingHouse.name}
-                <button className="heart-btn" onClick={toggleLike}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill={isLiked ? "#012e6a" : "none"} stroke="#012e6a" strokeWidth="2">
+                <button className="heart-btn" onClick={toggleLike} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill={isLiked ? '#012e6a' : 'none'} stroke="#012e6a" strokeWidth="2">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                   </svg>
                 </button>
               </h1>
-              <div className="rooms-left">
+              <div className="rooms-left" style={{ textAlign: 'left' }}>
                 <span className="rooms-left-number">{boardingHouse.availableRooms ?? '-'}</span>
                 <span className="rooms-left-text">rooms left</span>
               </div>
             </div>
-            <p className="bh-address">
+            <p className="bh-address" style={{ textAlign: 'left' }}>
               {boardingHouse.sitio ? `${boardingHouse.sitio}, ` : ''}
               {boardingHouse.barangay ? `Brgy. ${boardingHouse.barangay}, ` : ''}
               {boardingHouse.municipality ? `${boardingHouse.municipality}, ` : ''}
               {boardingHouse.province ? `${boardingHouse.province}` : ''}
             </p>
-            <p className="bh-price">₱{boardingHouse.price}</p>
+            <p className="bh-price" style={{ textAlign: 'left' }}>₱{boardingHouse.price}</p>
           </div>
           <div className="map-container">
             {boardingHouse.location && boardingHouse.location.lat && boardingHouse.location.lng ? (

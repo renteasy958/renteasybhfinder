@@ -30,46 +30,49 @@
   margin-top: 20px;
 }
 
-.liked-card {
+.boarding-card {
   background: white;
   border-radius: 12px;
-  padding: 15px;
+  padding: 12px;
+  width: 230px;
+  min-width: 230px;
+  min-height: 280px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 }
 
-.liked-card:hover {
+.boarding-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.liked-card-image {
+.boarding-card-image {
   width: 100%;
-  height: 200px;
+  height: 170px;
   background-color: #e5e7eb;
   border-radius: 8px;
   margin-bottom: 12px;
 }
 
-.liked-card-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 8px 0;
-}
-
-.liked-card-address {
-  font-size: 14px;
-  color: #6b7280;
-  margin: 0 0 8px 0;
-}
-
-.liked-card-price {
+.boarding-card-name {
   font-size: 16px;
-  font-weight: 700;
-  color: #012e6a;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 8px 0;
+}
+
+.boarding-card-address {
+  font-size: 13px;
+  color: #6b7280;
   margin: 0;
+}
+
+.boarding-card-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 8px 0;
 }
 
 @media (max-width: 480px) {

@@ -3,9 +3,10 @@ import './App.css';
 import Login from './frontend/login/login';
 import Register from './registration/register';
 import Home from './frontend/tenant/components/home';
+import Liked from './frontend/tenant/components/liked';
 import SearchResults from './frontend/tenant/components/searchresults';
 import BHDetails from './frontend/tenant/components/bhdetails';
-import Liked from './frontend/tenant/components/liked';
+// ...existing code...
 import Profile from './frontend/tenant/components/profile';
 import LLHome from './frontend/landlord/components/llhome';
 import LLReservations from './frontend/landlord/components/llreservations';
@@ -30,6 +31,28 @@ function App() {
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBHId, setSelectedBHId] = useState(null);
+  // Store all houses for search
+  const [allHouses, setAllHouses] = useState([]);
+
+  // Fetch all houses once for search
+  React.useEffect(() => {
+    async function fetchAllHouses() {
+      try {
+        const { db } = await import('./firebase/config');
+        const { collection, getDocs } = await import('firebase/firestore');
+        const querySnapshot = await getDocs(collection(db, 'boardingHouses'));
+        const houses = [];
+        querySnapshot.forEach((doc) => {
+          houses.push({ id: doc.id, ...doc.data() });
+        });
+        setAllHouses(houses);
+        localStorage.setItem('boardingHouses', JSON.stringify(houses));
+      } catch (error) {
+        console.error('Error fetching all boarding houses:', error);
+      }
+    }
+    fetchAllHouses();
+  }, []);
   // const [showLLVerifyModal, setShowLLVerifyModal] = useState(false);
 
   // Always redirect to correct dashboard after refresh
@@ -56,8 +79,9 @@ function App() {
       {currentPage === 'login' && <Login onNavigateToRegister={() => setCurrentPage('register')} onNavigateToHome={() => setCurrentPage('home')} onNavigateToLLHome={() => setCurrentPage('llhome')} onNavigateToAdmin={() => setCurrentPage('admindashboard')} />}
       {currentPage === 'register' && <Register onNavigateToLogin={() => setCurrentPage('login')} onNavigateToHome={() => setCurrentPage('home')} onNavigateToLLHome={() => setCurrentPage('llhome')} />}
       {currentPage === 'home' && <Home onNavigateToBHDetails={(id) => { setSelectedBHId(id); setCurrentPage('bhdetails'); }} onNavigate={(page) => setCurrentPage(page)} onSearchResults={(results) => { setSearchResults(results); setCurrentPage('searchresults'); }} currentPage={currentPage} />}
+      {currentPage === 'liked' && <Liked onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} onSearch={results => { setSearchResults(results); setCurrentPage('searchresults'); }} />}
       {currentPage === 'searchresults' && <SearchResults results={searchResults} onBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
-      {currentPage === 'bhdetails' && <BHDetails bhId={selectedBHId} onNavigateBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
+      {currentPage === 'bhdetails' && <BHDetails bhId={selectedBHId || localStorage.getItem('selectedBHId')} onNavigateBack={() => setCurrentPage('home')} onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
       {currentPage === 'liked' && <Liked onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
       {currentPage === 'profile' && <Profile onNavigate={(page) => setCurrentPage(page)} currentPage={currentPage} />}
       {currentPage === 'llhome' && <LLHome onNavigate={(page) => setCurrentPage(page)} />}
