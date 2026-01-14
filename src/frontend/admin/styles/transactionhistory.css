@@ -5,6 +5,7 @@
   font-size: 1.2rem;
 }
 
+
 .admin-page.transaction-history-page .admin-cards-list {
   margin-top: 16px;
   display: flex;
@@ -13,7 +14,8 @@
 }
 
 .admin-page.transaction-history-page .admin-card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
   background: #fff;
   border-radius: 10px;
@@ -22,6 +24,28 @@
   min-height: 36px;
   font-size: 1rem;
 }
+
+.admin-page.transaction-history-page .admin-card-header {
+  background: #f3f4f6;
+  font-weight: bold;
+}
+
+.admin-page.transaction-history-page .admin-card-title,
+.admin-page.transaction-history-page .admin-card-type,
+.admin-page.transaction-history-page .admin-card-date,
+.admin-page.transaction-history-page .admin-card-amount,
+.admin-page.transaction-history-page .admin-card-status {
+  display: block;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+/* Remove duplicate flex style, use only grid for all cards */
 
 .admin-page.transaction-history-page .admin-card-title {
   font-weight: 600;
@@ -36,8 +60,8 @@
   color: #6b7280;
   font-size: 15px;
   margin-right: 24px;
-  min-width: 110px;
-  display: inline-block;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 .admin-page.transaction-history-page .admin-card-date {
