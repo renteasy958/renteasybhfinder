@@ -9,6 +9,40 @@
   align-items: flex-start;
 }
 
+.balance-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 20px;
+  width: 100%;
+  margin-bottom: 16px;
+  margin-left: -32px;
+  max-width: none;
+}
+
+.balance-section h3 {
+  margin: 0;
+  color: #2563eb;
+}
+
+.balance-section button {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.balance-section button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 .tenant-cards-list {
   margin-top: 16px;
   display: flex;
@@ -70,6 +104,45 @@
   flex: 1;
   min-width: 70px;
   text-align: left;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #2563eb;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-content button:disabled {
+  cursor: not-allowed;
 }
 
 .tenant-history-container h2 {

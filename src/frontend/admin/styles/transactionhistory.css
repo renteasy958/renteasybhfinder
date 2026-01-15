@@ -1,21 +1,5 @@
 /* Delete icon button for transaction history */
-.admin-page.transaction-history-page .admin-card-delete-btn {
-  margin-left: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  vertical-align: middle;
-  display: inline-flex;
-  align-items: center;
-}
-
-.admin-page.transaction-history-page .admin-card-delete-btn svg {
-  display: block;
-  width: 18px;
-  height: 18px;
-  stroke: #dc3545;
-}
+/* Removed as per request */
 .admin-page {
   /* Add specific styles for the Transaction History page here */
   padding: 32px;
@@ -33,14 +17,14 @@
 
 .admin-page.transaction-history-page .admin-card {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 10px 18px;
+  padding: 8px 12px;
   min-height: 36px;
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 .admin-page.transaction-history-page .admin-card-header {
@@ -52,15 +36,16 @@
 .admin-page.transaction-history-page .admin-card-type,
 .admin-page.transaction-history-page .admin-card-date,
 .admin-page.transaction-history-page .admin-card-amount,
-.admin-page.transaction-history-page .admin-card-status {
+.admin-page.transaction-history-page .admin-card-status,
+.admin-page.transaction-history-page .admin-card-reference {
   display: block;
   min-width: 0;
   text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding-left: 32px;
-  padding-right: 32px;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 /* Remove duplicate flex style, use only grid for all cards */
@@ -68,56 +53,97 @@
 .admin-page.transaction-history-page .admin-card-title {
   font-weight: 600;
   color: #2563eb;
-  font-size: 16px;
-  margin-right: 24px;
-  min-width: 120px;
+  font-size: 14px;
+  margin-right: 12px;
+  min-width: 100px;
   display: inline-block;
 }
 
 .admin-page.transaction-history-page .admin-card-type {
   color: #6b7280;
-  font-size: 15px;
-  margin-right: 24px;
-  padding-left: 32px;
-  padding-right: 32px;
+  font-size: 13px;
+  margin-right: 12px;
+  min-width: 150px;
+  display: inline-block;
 }
 
 .admin-page.transaction-history-page .admin-card-date {
   color: #6b7280;
-  font-size: 15px;
-  margin-right: 24px;
-  min-width: 110px;
+  font-size: 13px;
+  margin-right: 12px;
+  min-width: 100px;
   display: inline-block;
 }
 
 /* Compact status styles */
 .admin-page.transaction-history-page .admin-card-status {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 13px;
   min-width: 40px;
   padding: 2px 6px;
   border-radius: 8px;
   display: inline-block;
 }
-.admin-page.transaction-history-page .admin-card-status.pending {
-  color: #ef4444;
-  background: #fff3f3;
-}
-.admin-page.transaction-history-page .admin-card-status.completed,
-.admin-page.transaction-history-page .admin-card-status.verified {
-  color: #22c55e;
-  background: #e6fbe6;
-}
-.admin-page.transaction-history-page .admin-card-status.rejected {
-  color: #ef4444;
-  background: #fff3f3;
-}
 
 .admin-page.transaction-history-page .admin-card-amount {
   color: #22c55e;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  margin-right: 18px;
+  margin-right: 12px;
+  min-width: 80px;
+  display: inline-block;
+}
+
+.admin-page.transaction-history-page .admin-card-reference {
+  color: #6b7280;
+  font-size: 13px;
+  margin-right: 12px;
   min-width: 90px;
   display: inline-block;
+}
+
+.admin-page.transaction-history-page .admin-card-balance {
+  color: #22c55e;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 12px;
+  min-width: 80px;
+  display: inline-block;
+}
+
+.transaction-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.filter-btn.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.balance-summary {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2563eb;
 }

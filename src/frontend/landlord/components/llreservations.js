@@ -147,11 +147,23 @@ const LLReservations = ({ onNavigate }) => {
               <div className="modal-actions">
                 <button className="reject-button" onClick={async () => {
                   try {
-                    const { doc, deleteDoc } = await import('firebase/firestore');
+                    const { doc, deleteDoc, updateDoc, getDoc } = await import('firebase/firestore');
                     const { db } = await import('../../../firebase/config');
-                    await deleteDoc(doc(db, 'reservations', selectedReservation.id));
+                    // Refund 50 pesos to tenant's balance
+                    if (selectedReservation.tenantId) {
+                      const tenantRef = doc(db, 'users', selectedReservation.tenantId);
+                      const tenantSnap = await getDoc(tenantRef);
+                      if (tenantSnap.exists()) {
+                        const tenantData = tenantSnap.data();
+                        let balance = parseFloat(tenantData.balance) || 0;
+                        balance += 50;
+                        await updateDoc(tenantRef, { balance });
+                      }
+                    }
+                    // Update reservation status to Rejected instead of deleting
+                    await updateDoc(doc(db, 'reservations', selectedReservation.id), { status: 'Rejected' });
                   } catch (err) {
-                    alert('Failed to delete reservation from Firestore.');
+                    alert('Failed to reject reservation.');
                   }
                   setReservations(prev => prev.filter(r => r.id !== selectedReservation.id));
                   closeModal();

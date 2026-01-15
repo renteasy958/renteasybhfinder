@@ -48,9 +48,9 @@ const Requests = () => {
 
   const filtered = requests.filter(item => {
     if (activeTab === 'Tenant') {
-      return item.label === 'Tenant' && item.request === 'Refund';
+      return item.label === 'Tenant' && item.request === 'Refund' && item.status !== 'Completed';
     } else if (activeTab === 'Landlord') {
-      return item.label === 'Landlord' && item.request === 'Withdrawal Request';
+      return item.label === 'Landlord' && item.request === 'Withdrawal Request' && item.status !== 'Completed';
     }
     return false;
   });

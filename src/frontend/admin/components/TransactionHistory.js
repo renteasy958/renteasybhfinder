@@ -27,25 +27,7 @@ const sampleTransactions = [
 const TransactionHistory = () => {
 	const [transactions, setTransactions] = useState([]);
 	const [loading, setLoading] = useState(true);
-
-	const handleDelete = async (item) => {
-		let collectionName = '';
-		if (item.type === 'tenant_payment') {
-			collectionName = 'reservations';
-		} else if (item.type === 'verification_payment') {
-			collectionName = 'verificationRequests';
-		} else if (item.type === 'landlord_withdrawal') {
-			collectionName = 'requests';
-		}
-		if (!collectionName) return;
-		if (!window.confirm('Delete this transaction?')) return;
-		try {
-			await deleteDoc(firestoreDoc(db, collectionName, item.id));
-			setTransactions(prev => prev.filter(t => t.id !== item.id));
-		} catch (err) {
-			alert('Failed to delete transaction.');
-		}
-	};
+	const [filterType, setFilterType] = useState('all');
 
 	useEffect(() => {
 		const fetchTransactions = async () => {
@@ -61,6 +43,7 @@ const TransactionHistory = () => {
 						date: data.date || '',
 						amount: 50, // Always 50 per reservation
 						status: data.status || 'Completed',
+						refNumber: data.refNumber || '',
 					};
 				});
 
@@ -95,13 +78,43 @@ const TransactionHistory = () => {
 								status: data.status || 'Pending',
 								refNumber: data.refNumber || '',
 							};
+						} else if (data.label === 'Tenant' && data.request === 'Refund') {
+							return {
+								id: doc.id,
+								type: 'tenant_withdrawal',
+								user: data.tenantName || data.name || data.user || '',
+								date: data.date && data.date.toDate ? data.date.toDate() : (data.date || ''),
+								amount: data.amount,
+								status: data.status || 'Pending',
+								refNumber: data.refNumber || '',
+							};
 						}
 						return null;
 					})
 					.filter(Boolean);
 
-				// Sort by date/time descending (most recent first)
-				const allTransactions = [...tenantPayments, ...landlordPayments, ...withdrawalTransactions].sort((a, b) => {
+				// Sort by date/time ascending for balance calculation
+				let sortedTransactions = [...tenantPayments, ...landlordPayments, ...withdrawalTransactions].sort((a, b) => {
+					const dateA = a.date instanceof Date ? a.date : new Date(a.date);
+					const dateB = b.date instanceof Date ? b.date : new Date(b.date);
+					return dateA - dateB;
+				});
+
+				// Calculate cumulative balance
+				let balance = 0;
+				sortedTransactions = sortedTransactions.map(transaction => {
+					if (transaction.type === 'tenant_payment') {
+						balance += 50;
+					} else if (transaction.type === 'verification_payment') {
+						balance += 300;
+					} else if (transaction.type === 'landlord_withdrawal' || transaction.type === 'tenant_withdrawal') {
+						balance -= transaction.amount;
+					}
+					return { ...transaction, balance };
+				});
+
+				// Sort descending for display (most recent first)
+				const allTransactions = sortedTransactions.sort((a, b) => {
 					const dateA = a.date instanceof Date ? a.date : new Date(a.date);
 					const dateB = b.date instanceof Date ? b.date : new Date(b.date);
 					return dateB - dateA;
@@ -119,6 +132,16 @@ const TransactionHistory = () => {
 
 	return (
 		<div className="admin-page transaction-history-page">
+			<div className="transaction-filters">
+				<button className={`filter-btn${filterType === 'all' ? ' active' : ''}`} onClick={() => setFilterType('all')}>All</button>
+				<button className={`filter-btn${filterType === 'landlord_withdrawal' ? ' active' : ''}`} onClick={() => setFilterType('landlord_withdrawal')}>Landlord Withdrawal</button>
+				<button className={`filter-btn${filterType === 'tenant_withdrawal' ? ' active' : ''}`} onClick={() => setFilterType('tenant_withdrawal')}>Tenant Withdrawal</button>
+				<button className={`filter-btn${filterType === 'verification_payment' ? ' active' : ''}`} onClick={() => setFilterType('verification_payment')}>Verification Payment</button>
+				<button className={`filter-btn${filterType === 'tenant_payment' ? ' active' : ''}`} onClick={() => setFilterType('tenant_payment')}>Tenant Payment</button>
+				<div className="balance-summary">
+					<span>Total Balance: ₱{transactions.length > 0 ? transactions[0].balance : 0}</span>
+				</div>
+			</div>
 			<div className="admin-cards-list">
 				<div className="admin-card admin-card-header" style={{fontWeight:'bold',background:'#f3f4f6'}}>
 					<span className="admin-card-title">Type</span>
@@ -126,28 +149,20 @@ const TransactionHistory = () => {
 					<span className="admin-card-date">Date</span>
 					<span className="admin-card-amount">Amount</span>
 					<span className="admin-card-status">Status</span>
+					<span className="admin-card-reference">Reference</span>
 				</div>
 				{loading ? (
 					<p style={{textAlign: 'center', width: '100%'}}>Loading...</p>
 				) : transactions.length === 0 ? (
 					<p style={{textAlign: 'center', width: '100%'}}>No transaction history found</p>
 				) : (
-					transactions.map((item) => (
+					transactions.filter(item => filterType === 'all' || item.type === filterType).map((item) => (
 										<div key={item.id} className="admin-card">
 												<span className="admin-card-title" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-													<button
-														className="admin-card-delete-btn"
-														title="Delete"
-														onClick={() => handleDelete(item)}
-														style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center' }}
-													>
-														<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-															<path d="M6 6L14 14M6 14L14 6" stroke="#dc3545" strokeWidth="2" strokeLinecap="round"/>
-														</svg>
-													</button>
 													{item.type === 'tenant_payment' || item.category === 'tenant_payment' ? 'Tenant Payment' :
 														item.type === 'verification_payment' || item.category === 'verification_payment' ? 'Landlord Verification Payment' :
 														item.type === 'landlord_withdrawal' ? 'Landlord Withdrawal' :
+														item.type === 'tenant_withdrawal' ? 'Tenant Withdrawal' :
 														item.transaction || item.type}
 												</span>
 							<span className="admin-card-type">{item.user}</span>
@@ -159,10 +174,8 @@ const TransactionHistory = () => {
 							<span className="admin-card-amount">{item.amount ? `₱${item.amount}` : ''}</span>
 														<span className={item.status === 'Pending' ? 'admin-card-status pending' : 'admin-card-status completed'}>
 															{item.status}
-															{item.type === 'landlord_withdrawal' && item.status === 'Completed' && item.refNumber ? (
-																<span style={{ display: 'block', fontSize: '0.9em', color: '#22c55e', marginTop: '2px' }}>Ref#: {item.refNumber}</span>
-															) : null}
 														</span>
+														<span className="admin-card-reference">{item.refNumber || ''}</span>
 						</div>
 					))
 				)}
