@@ -102,23 +102,37 @@ const Requests = () => {
                   // Update status in requests collection
                   await updateDoc(doc(db, 'requests', selected.id), { status: 'Completed', refNumber: selected.refNumber || '' });
 
-                  // Deduct balance from landlord
-                  const landlordId = selected.userId;
-                  if (landlordId) {
-                    // Try users collection first
-                    let landlordRef = doc(db, 'users', landlordId);
-                    let landlordSnap = await getDoc(landlordRef);
-                    if (!landlordSnap.exists()) {
-                      // Try landlords collection
-                      landlordRef = doc(db, 'landlords', landlordId);
-                      landlordSnap = await getDoc(landlordRef);
+                  // Handle balance adjustments
+                  const userId = selected.userId;
+                  const amount = parseFloat(selected.amount) || 0;
+
+                  if (selected.label === 'Landlord' && selected.request === 'Withdrawal Request') {
+                    // Deduct from landlord balance
+                    if (userId) {
+                      let userRef = doc(db, 'users', userId);
+                      let userSnap = await getDoc(userRef);
+                      if (!userSnap.exists()) {
+                        userRef = doc(db, 'landlords', userId);
+                        userSnap = await getDoc(userRef);
+                      }
+                      if (userSnap.exists()) {
+                        const data = userSnap.data();
+                        let balance = parseFloat(data.balance) || 0;
+                        balance = Math.max(0, balance - amount);
+                        await updateDoc(userRef, { balance });
+                      }
                     }
-                    if (landlordSnap.exists()) {
-                      const data = landlordSnap.data();
-                      let balance = parseFloat(data.balance) || 0;
-                      const amount = parseFloat(selected.amount) || 0;
-                      balance = Math.max(0, balance - amount);
-                      await updateDoc(landlordRef, { balance });
+                  } else if (selected.label === 'Tenant' && selected.request === 'Refund') {
+                    // Deduct from tenant balance (money has been sent)
+                    if (userId) {
+                      const userRef = doc(db, 'users', userId);
+                      const userSnap = await getDoc(userRef);
+                      if (userSnap.exists()) {
+                        const data = userSnap.data();
+                        let balance = parseFloat(data.balance) || 0;
+                        balance = Math.max(0, balance - amount);
+                        await updateDoc(userRef, { balance });
+                      }
                     }
                   }
 
