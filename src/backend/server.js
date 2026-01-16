@@ -48,21 +48,28 @@ const upload = multer({ storage });
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    // Upload to Cloudinary
-    const result = await cloudinary.uploader.upload_stream({
-      folder: 'renteasy',
-      public_id: uuidv4(),
-    }, async (error, result) => {
-      if (error) return res.status(500).json({ error: error.message });
-      // Save URL to Firestore (example: images collection)
-      const docRef = await db.collection('images').add({
-        url: result.secure_url,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-      res.json({ url: result.secure_url, id: docRef.id });
-    });
-    result.end(req.file.buffer);
+    
+    // Upload to Cloudinary using stream
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'renteasy',
+        public_id: uuidv4(),
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          return res.status(500).json({ error: error.message });
+        }
+        
+        // Return the Cloudinary URL directly
+        // The frontend will handle saving to Firestore
+        res.json({ url: result.secure_url });
+      }
+    );
+    
+    uploadStream.end(req.file.buffer);
   } catch (err) {
+    console.error('Upload error:', err);
     res.status(500).json({ error: err.message });
   }
 });
