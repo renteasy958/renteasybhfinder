@@ -8,7 +8,23 @@ const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 // Initialize Firebase Admin
-const serviceAccount = require('./firebaseServiceAccountKey.json');
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (err) {
+    console.error('Invalid FIREBASE_SERVICE_ACCOUNT JSON');
+    process.exit(1);
+  }
+} else {
+  try {
+    serviceAccount = require('./firebaseServiceAccountKey.json');
+  } catch (err) {
+    console.error('Firebase service account not found. Set FIREBASE_SERVICE_ACCOUNT env var.');
+    process.exit(1);
+  }
+}
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
