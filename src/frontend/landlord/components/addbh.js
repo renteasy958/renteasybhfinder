@@ -237,7 +237,7 @@ const AddBH = ({ onNavigate }) => {
 
         {currentStep === 1 && (
           <div className="form-section">
-            <div className="form-split">
+            <div className={`form-split ${currentStep === 1 ? 'step-1' : ''}`}>
               <div className="form-left">
                 <h3>Upload Images</h3>
                 <input

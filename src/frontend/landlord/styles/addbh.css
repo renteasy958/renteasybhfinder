@@ -109,6 +109,10 @@
   transform: translateX(-50%);
 }
 
+.form-split.step-1::before {
+  display: none;
+}
+
 .form-left,
 .form-right {
   flex: 1;
