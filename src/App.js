@@ -58,19 +58,28 @@ function App() {
   // Always redirect to correct dashboard after refresh
   React.useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+    console.log('App.js useEffect - userData:', userData);
+    console.log('App.js useEffect - currentPage:', currentPage);
+    
     if (userData && userData.userType) {
-      if (userData.userType === 'admin' && currentPage !== 'admindashboard') setCurrentPage('admindashboard');
-      if (userData.userType === 'landlord' && currentPage !== 'llhome') setCurrentPage('llhome');
-      if (userData.userType === 'tenant' && currentPage !== 'home') setCurrentPage('home');
-    }
-  }, []);
-
-  // Keep currentPage in sync with user type for refresh persistence
-  React.useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('userData') || 'null');
-    if (userData) {
-      userData.lastPage = currentPage;
-      localStorage.setItem('userData', JSON.stringify(userData));
+      // Only redirect if not already on a valid page for this user type
+      const adminPages = ['admindashboard'];
+      const landlordPages = ['llhome', 'llreservations', 'addbh', 'llhistory', 'llprofile'];
+      const tenantPages = ['home', 'liked', 'searchresults', 'bhdetails', 'profile', 'history'];
+      
+      if (userData.userType === 'admin' && !adminPages.includes(currentPage)) {
+        console.log('Redirecting to admindashboard');
+        setCurrentPage('admindashboard');
+      } else if (userData.userType === 'landlord' && !landlordPages.includes(currentPage)) {
+        console.log('Redirecting to llhome');
+        setCurrentPage('llhome');
+      } else if (userData.userType === 'tenant' && !tenantPages.includes(currentPage)) {
+        console.log('Redirecting to home');
+        setCurrentPage('home');
+      }
+    } else if (!userData && currentPage !== 'login' && currentPage !== 'register') {
+      console.log('No userData found, redirecting to login');
+      setCurrentPage('login');
     }
   }, [currentPage]);
 

@@ -48,7 +48,14 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onN
     setError('');
     // Hardcoded admin login
     if (email === 'renteasy@gmail.com' && password === 'renteasy') {
-      localStorage.setItem('userData', JSON.stringify({ userType: 'admin', email }));
+      localStorage.setItem('userData', JSON.stringify({ 
+        userType: 'admin', 
+        email,
+        uid: 'admin-hardcoded',
+        userId: 'admin-hardcoded',
+        firstName: 'Admin',
+        surname: 'User'
+      }));
       onNavigateToAdmin();
       return;
     }
@@ -75,7 +82,12 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onN
           province: userData.address?.province || userData.province,
           mobileNumber: userData.mobileNumber,
           occupationType: userData.occupationType,
-          email: userData.email
+          email: userData.email,
+          boardingHouseName: userData.boardingHouse?.name || '',
+          bhStreet: userData.boardingHouse?.address?.street || '',
+          bhBarangay: userData.boardingHouse?.address?.barangay || '',
+          bhCity: userData.boardingHouse?.address?.city || '',
+          bhProvince: userData.boardingHouse?.address?.province || ''
         };
         localStorage.setItem('userData', JSON.stringify(userDataForStorage));
         await fetchAndStoreVerificationStatus(userCredential.user.uid); // Fetch and store verification status
@@ -149,7 +161,7 @@ const Login = ({ onNavigateToRegister, onNavigateToHome, onNavigateToLLHome, onN
           </button>
 
           <div className="signup-link">
-            New here? <span className="login-signup-link" onClick={onNavigateToRegister}>Create an Account</span>
+            New here? <span className="login-signup-link" onClick={() => { console.log('Create Account clicked'); onNavigateToRegister(); }}>Create an Account</span>
           </div>
         </form>
       </div>

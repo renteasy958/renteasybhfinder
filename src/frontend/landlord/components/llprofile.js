@@ -11,6 +11,19 @@ const LLProfile = ({ onNavigate }) => {
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const fileInputRef = useRef(null);
 
+  // Calculate age from birthdate
+  const calculateAge = (birthdate) => {
+    if (!birthdate) return 'N/A';
+    const birthDate = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   useEffect(() => {
     // Get landlord data from Firestore using userData from localStorage
     const storedUserData = localStorage.getItem('userData');
@@ -147,7 +160,7 @@ const LLProfile = ({ onNavigate }) => {
             </div>
             <div className="profile-info-item">
               <label>Age</label>
-              <p>{userData.age || 'N/A'}</p>
+              <p>{calculateAge(userData.birthdate)}</p>
             </div>
             <div className="profile-info-item">
               <label>Birthdate</label>

@@ -79,22 +79,21 @@ const PendingApproval = () => {
 						</div>
 						<div className="modal-details">
 							<div className="modal-bh-name">{selected.name}</div>
-							<div className="modal-info-row"><span className="modal-label">Address:</span> {selected.address}</div>
+							<div className="modal-info-row"><span className="modal-label">Address:</span> {selected.sitio && selected.barangay && selected.municipality && selected.province ? `${selected.sitio}, ${selected.barangay}, ${selected.municipality}, ${selected.province}` : (selected.address || 'N/A')}</div>
 							<div className="modal-info-row"><span className="modal-label">Type:</span> {selected.type}</div>
 							<div className="modal-info-row"><span className="modal-label">Price:</span> <span className="modal-price">{selected.price}</span></div>
-							<div className="modal-info-row"><span className="modal-label">Latitude:</span> {selected.location && selected.location.lat}</div>
-							<div className="modal-info-row"><span className="modal-label">Longitude:</span> {selected.location && selected.location.lng}</div>
 							<div className="modal-amenities">
 								<div className="amenities-section">
 									<div className="amenities-title">Included Amenities</div>
 									<ul className="amenities-list">
-										{selected.includedAmenities && selected.includedAmenities.map((inc, i) => <li key={i} className="amenity-item included">{inc}</li>)}
+										{selected.includedAmenities && selected.includedAmenities.map((inc, i) => <li key={i} className="amenity-item">{inc}</li>)}
 									</ul>
 								</div>
+								<div style={{width: '1px', background: '#e5e7eb', alignSelf: 'stretch'}}></div>
 								<div className="amenities-section">
 									<div className="amenities-title">Excluded Amenities</div>
 									<ul className="amenities-list">
-										{selected.excludedAmenities && selected.excludedAmenities.map((exc, i) => <li key={i} className="amenity-item excluded">{exc}</li>)}
+										{selected.excludedAmenities && selected.excludedAmenities.map((exc, i) => <li key={i} className="amenity-item">{exc}</li>)}
 									</ul>
 								</div>
 							</div>

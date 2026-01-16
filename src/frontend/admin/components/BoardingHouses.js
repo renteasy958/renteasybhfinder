@@ -18,38 +18,69 @@ const BoardingHouses = () => {
 
 	useEffect(() => {
 		const fetchApproved = async () => {
-			const q = query(collection(db, 'boardingHouses'));
-			const querySnapshot = await getDocs(q);
-			const allHouses = [];
-			for (const bhDoc of querySnapshot.docs) {
-				const data = bhDoc.data();
-				let landlord = null;
-				if (data.userId) {
-					let landlordDoc = await getDoc(doc(db, 'users', data.userId));
-					if (!landlordDoc.exists()) {
-						landlordDoc = await getDoc(doc(db, 'landlords', data.userId));
-					}
-					if (landlordDoc.exists()) {
-						landlord = { id: landlordDoc.id, ...landlordDoc.data() };
-					}
-				}
-				let tenant = null;
-				if (data.tenantId) {
-					const tenantDoc = await getDoc(doc(db, 'tenants', data.tenantId));
-					if (tenantDoc.exists()) {
-						tenant = { id: tenantDoc.id, ...tenantDoc.data() };
-					}
-				}
-				allHouses.push({ id: bhDoc.id, ...data, landlord, tenant });
-			}
-			// Filter based on tab
-			let houses = [];
 			if (activeTab === 'available') {
-				houses = allHouses.filter(h => h.status === 'approved' && (!h.tenantId || !h.tenant));
+				// Fetch available boarding houses
+				const q = query(collection(db, 'boardingHouses'));
+				const querySnapshot = await getDocs(q);
+				const allHouses = [];
+				for (const bhDoc of querySnapshot.docs) {
+					const data = bhDoc.data();
+					let landlord = null;
+					if (data.userId) {
+						let landlordDoc = await getDoc(doc(db, 'users', data.userId));
+						if (!landlordDoc.exists()) {
+							landlordDoc = await getDoc(doc(db, 'landlords', data.userId));
+						}
+						if (landlordDoc.exists()) {
+							landlord = { id: landlordDoc.id, ...landlordDoc.data() };
+						}
+					}
+					allHouses.push({ id: bhDoc.id, ...data, landlord });
+				}
+				const houses = allHouses.filter(h => h.status === 'approved');
+				setBoardingHouses(houses);
 			} else if (activeTab === 'occupied') {
-				houses = allHouses.filter(h => h.tenantId && h.tenant);
+				// Fetch all approved reservations
+				const reservationsQuery = query(
+					collection(db, 'reservations'),
+					where('status', '==', 'Approved')
+				);
+				const reservationsSnapshot = await getDocs(reservationsQuery);
+				const occupiedRooms = [];
+				
+				for (const resDoc of reservationsSnapshot.docs) {
+					const reservation = resDoc.data();
+					// Fetch the boarding house details
+					if (reservation.boardingHouseId) {
+						const bhDoc = await getDoc(doc(db, 'boardingHouses', reservation.boardingHouseId));
+						if (bhDoc.exists()) {
+							const bhData = bhDoc.data();
+							// Fetch landlord info
+							let landlord = null;
+							if (bhData.userId) {
+								let landlordDoc = await getDoc(doc(db, 'users', bhData.userId));
+								if (!landlordDoc.exists()) {
+									landlordDoc = await getDoc(doc(db, 'landlords', bhData.userId));
+								}
+								if (landlordDoc.exists()) {
+									landlord = { id: landlordDoc.id, ...landlordDoc.data() };
+								}
+							}
+							// Add the boarding house with reservation (tenant) info
+							occupiedRooms.push({
+								id: bhDoc.id,
+								...bhData,
+								landlord,
+								reservation: {
+									id: resDoc.id,
+									...reservation
+								}
+							});
+						}
+					}
+				}
+				setBoardingHouses(occupiedRooms);
 			}
-			setBoardingHouses(houses);
 		};
 		fetchApproved();
 	}, [activeTab]);
@@ -96,7 +127,7 @@ const BoardingHouses = () => {
 						<p style={{textAlign: 'center', width: '100%'}}>No boarding houses found</p>
 					) : (
 						boardingHouses.map((bh) => (
-							<div key={bh.id} className="rectangle-card" onClick={() => handleCardClick(bh)} style={{cursor: 'pointer'}}>
+					<div key={bh.id} className="admin-bh-card" onClick={() => handleCardClick(bh)} style={{cursor: 'pointer'}}>
 								<div className="card-image-container" style={bh.images && bh.images[0] ? {backgroundImage: `url(${bh.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center'} : {}}></div>
 								<div className="card-content">
 									<div className="card-name">{bh.name}</div>
@@ -181,17 +212,17 @@ const BoardingHouses = () => {
 											<div>No landlord information available</div>
 										)}
 									</div>
-									{(selected.tenantId || selected.tenant) && (
+									{selected.reservation && (
 										<div className="modal-tenant-info">
 											<div className="modal-label">Tenant Info</div>
-											<div>Name: {selected.tenant ? selected.tenant.name : 'N/A'}</div>
-											<div>Address: {selected.tenant ? selected.tenant.address : 'N/A'}</div>
-											<div>Age: {selected.tenant ? selected.tenant.age : 'N/A'}</div>
-											<div>Birthdate: {selected.tenant ? selected.tenant.birthdate : 'N/A'}</div>
-											<div>Civil Status: {selected.tenant ? selected.tenant.civilStatus : 'N/A'}</div>
-											<div>Gender: {selected.tenant ? selected.tenant.gender : 'N/A'}</div>
-											<div>Mobile: {selected.tenant ? selected.tenant.mobile : 'N/A'}</div>
-											<div>Email: {selected.tenant ? selected.tenant.email : 'N/A'}</div>
+											<div>Name: {selected.reservation.name || selected.reservation.tenantName || 'N/A'}</div>
+											<div>Address: {selected.reservation.address || 'N/A'}</div>
+											<div>Age: {selected.reservation.age || 'N/A'}</div>
+											<div>Birthdate: {selected.reservation.birthdate || 'N/A'}</div>
+											<div>Civil Status: {selected.reservation.civilStatus || 'N/A'}</div>
+											<div>Gender: {selected.reservation.gender || 'N/A'}</div>
+											<div>Mobile: {selected.reservation.mobile || 'N/A'}</div>
+											<div>Email: {selected.reservation.email || 'N/A'}</div>
 										</div>
 									)}
 								</div>

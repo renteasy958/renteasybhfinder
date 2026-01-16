@@ -287,6 +287,9 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
                       const reservationData = {
                         tenantId: userData.uid || userData.id || '',
                         tenantName: userData.firstName && userData.surname ? `${userData.firstName} ${userData.middleName || ''} ${userData.surname}`.replace(/  +/g, ' ').trim() : '',
+                        firstName: userData.firstName || '',
+                        middleName: userData.middleName || '',
+                        lastName: userData.surname || '',
                         address: userData.address || `${userData.street || ''}, ${userData.barangay || ''}, ${userData.city || ''}, ${userData.province || ''}`.replace(/, +/g, ', ').replace(/^, |, $/g, ''),
                         age: userData.age || '',
                         gender: userData.gender || '',

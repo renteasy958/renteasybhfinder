@@ -44,6 +44,18 @@ const LLReservations = ({ onNavigate }) => {
     fetchReservations();
   }, []);
 
+  const calculateAge = (birthdate) => {
+    if (!birthdate) return 'N/A';
+    const birth = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   const handleViewDetails = (reservation) => {
     setSelectedReservation(reservation);
     setShowModal(true);
@@ -89,7 +101,7 @@ const LLReservations = ({ onNavigate }) => {
                 <div className="info-grid">
                   <div className="info-item">
                     <span className="info-label">Full Name:</span>
-                    <span className="info-value">{selectedReservation.name}</span>
+                    <span className="info-value">{`${selectedReservation.firstName || ''} ${selectedReservation.middleName || ''} ${selectedReservation.lastName || ''}`.trim() || selectedReservation.name}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Address:</span>
@@ -97,7 +109,7 @@ const LLReservations = ({ onNavigate }) => {
                   </div>
                   <div className="info-item">
                     <span className="info-label">Age:</span>
-                    <span className="info-value">{selectedReservation.age}</span>
+                    <span className="info-value">{calculateAge(selectedReservation.birthdate)}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Gender:</span>

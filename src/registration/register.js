@@ -107,6 +107,8 @@ const Register = ({ onNavigateToLogin, onNavigateToHome, onNavigateToLLHome }) =
 
       // Save user data to localStorage
       localStorage.setItem('userData', JSON.stringify({
+        uid: userCredential.user.uid,
+        userId: userCredential.user.uid,
         userType: 'tenant',
         firstName: tenantData.firstName,
         middleName: tenantData.middleName,
@@ -184,6 +186,30 @@ const Register = ({ onNavigateToLogin, onNavigateToHome, onNavigateToLLHome }) =
         email: landlordData.email,
         createdAt: new Date().toISOString()
       });
+
+      // Save user data to localStorage
+      localStorage.setItem('userData', JSON.stringify({
+        uid: userCredential.user.uid,
+        userId: userCredential.user.uid,
+        userType: 'landlord',
+        firstName: landlordData.firstName,
+        middleName: landlordData.middleName,
+        surname: landlordData.surname,
+        civilStatus: landlordData.civilStatus,
+        gender: landlordData.gender,
+        birthdate: landlordData.birthdate,
+        street: landlordData.street,
+        barangay: landlordData.barangay,
+        city: landlordData.city,
+        province: landlordData.province,
+        mobileNumber: landlordData.mobileNumber,
+        boardingHouseName: landlordData.boardingHouseName,
+        bhStreet: landlordData.bhStreet,
+        bhBarangay: landlordData.bhBarangay,
+        bhCity: landlordData.bhCity,
+        bhProvince: landlordData.bhProvince,
+        email: landlordData.email
+      }));
 
       console.log('Landlord registration successful:', userCredential.user);
       setShowSuccess(true);

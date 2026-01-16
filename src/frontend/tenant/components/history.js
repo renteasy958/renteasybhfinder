@@ -136,8 +136,8 @@ const History = ({ onNavigate, currentPage, userId }) => {
             <div key={item.id} className="tenant-card">
               <span className="tenant-card-title">{item.displayType || item.type || 'Transaction'}</span>
               <span className="tenant-card-date">{item.date?.toDate ? item.date.toDate().toLocaleDateString() : new Date(item.date).toLocaleDateString()}</span>
-              <span className="tenant-card-amount">₱{item.price || item.amount || 50}</span>
-              <span className={item.status === 'Pending' ? 'tenant-card-status pending' : item.status === 'Completed' ? 'tenant-card-status completed' : 'tenant-card-status rejected'}>
+              <span className="tenant-card-amount">₱{item.type === 'Reservation' ? 50 : (item.amount || item.price || 0)}</span>
+              <span className={item.status === 'Pending' ? 'tenant-card-status pending' : item.status === 'Completed' ? 'tenant-card-status completed' : item.status === 'Approved' ? 'tenant-card-status approved' : 'tenant-card-status rejected'}>
                 {item.status}
                 {item.refNumber && item.status === 'Completed' && (
                   <div style={{ fontSize: '12px', marginTop: '4px', color: '#666' }}>

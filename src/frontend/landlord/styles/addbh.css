@@ -304,11 +304,11 @@
   gap: 12px;
 }
 
-.amenity-item {
-  padding: 12px 16px;
+.addbh-amenity-item {
+  padding: 8px 12px;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 500;
   color: #374151;
   cursor: pointer;
@@ -317,32 +317,32 @@
   background-color: white;
 }
 
-.amenity-item:hover {
+.addbh-amenity-item:hover {
   border-color: #012e6a;
   background-color: #f9fafb;
 }
 
-.amenity-item.selected {
+.addbh-amenity-item.selected {
   background-color: #012e6a;
   color: white;
   border-color: #012e6a;
 }
 
-.amenity-item.selected-excluded {
+.addbh-amenity-item.selected-excluded {
   background-color: #012e6a;
   color: white;
   border-color: #012e6a;
 }
 
-.amenity-item.selected:hover {
+.addbh-amenity-item.selected:hover {
   background-color: #023a85;
 }
 
-.amenity-item.selected-excluded:hover {
+.addbh-amenity-item.selected-excluded:hover {
   background-color: #023a85;
 }
 
-.amenity-item.disabled {
+.addbh-amenity-item.disabled {
   opacity: 0.3;
   cursor: not-allowed;
   pointer-events: none;
@@ -633,7 +633,7 @@
     gap: 10px;
   }
 
-  .amenity-item {
+  .addbh-amenity-item {
     font-size: 12px;
     padding: 10px 12px;
   }

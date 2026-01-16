@@ -57,7 +57,8 @@ const TransactionHistory = () => {
 						user: data.name || '',
 						date: data.date || '',
 						amount: 300, // fixed verification fee
-						status: 'Pending',
+						status: data.status === 'approved' ? 'Completed' : (data.status === 'rejected' ? 'Rejected' : 'Pending'),
+						refNumber: data.referenceNumber || '',
 					};
 				});
 

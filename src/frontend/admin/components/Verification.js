@@ -66,7 +66,7 @@ const Verification = () => {
 			<div className="verification-cards">
 				{requests.map(req => (
 					<div className="verification-card" key={req.id} onClick={() => setSelected(req)}>
-						<div className="verification-card-name">{req.name}</div>
+						<div className="verification-card-name">{req.name || `User ${req.userId?.substring(0, 8) || 'Unknown'}`}</div>
 					</div>
 				))}
 			</div>

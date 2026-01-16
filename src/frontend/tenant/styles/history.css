@@ -97,6 +97,9 @@
 .tenant-card-status.completed {
   color: #22c55e;
 }
+.tenant-card-status.approved {
+  color: #22c55e;
+}
 .tenant-card-status.rejected {
   color: #dc2626;
 }

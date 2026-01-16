@@ -70,10 +70,14 @@
 }
 .modal-amenities {
   display: flex;
+  flex-direction: row;
   gap: 24px;
   margin: 12px 0;
+  max-height: 300px;
+  overflow-y: auto;
 }
 .amenities-section {
+  flex: 1;
   flex: 1;
 }
 .amenities-title {
@@ -83,31 +87,21 @@
 }
 .amenities-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   margin: 0;
   padding: 0;
   list-style: none;
+  align-items: flex-start;
 }
 .amenity-item {
   font-size: 13px;
-  padding: 4px 12px;
-  border-radius: 6px;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #374151;
   margin: 0;
-  flex: 0 0 calc(33.333% - 8px);
-  box-sizing: border-box;
-  text-align: center;
-  white-space: nowrap;
-}
-.amenity-item.included {
-  color: #22c55e;
-  border-color: #22c55e;
-}
-.amenity-item.excluded {
-  color: #ef4444;
-  border-color: #ef4444;
+  text-align: left;
 }
 .modal-landlord-info {
   margin: 16px 0 8px 0;
@@ -180,23 +174,27 @@
   flex-direction: column;
   justify-content: center;
   gap: 7px;
+  align-items: flex-start;
 }
 
 .card-name {
   font-weight: 600;
-  color: #2563eb;
+  color: #1e3a8a;
   font-size: 16px;
   margin-bottom: 4px;
+  text-align: left;
 }
 
 .card-type {
   color: #6b7280;
   font-size: 15px;
   margin-bottom: 4px;
+  text-align: left;
 }
 
 .card-price {
-  color: #22c55e;
+  color: #000000;
   font-size: 15px;
   font-weight: 600;
+  text-align: left;
 }

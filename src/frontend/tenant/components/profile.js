@@ -7,6 +7,19 @@ const Profile = ({ onNavigate }) => {
   const [profilePicture, setProfilePicture] = useState(null);
   const fileInputRef = useRef(null);
 
+  // Calculate age from birthdate
+  const calculateAge = (birthdate) => {
+    if (!birthdate) return 'N/A';
+    const birthDate = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   useEffect(() => {
     // Get user data from localStorage (you can also fetch from Firebase)
     const storedUserData = localStorage.getItem('userData');
@@ -172,6 +185,11 @@ const Profile = ({ onNavigate }) => {
             <div className="profile-info-item">
               <label>Civil Status</label>
               <p>{userData.civilStatus}</p>
+            </div>
+
+            <div className="profile-info-item">
+              <label>Age</label>
+              <p>{calculateAge(userData.birthdate)}</p>
             </div>
 
             <div className="profile-info-item">

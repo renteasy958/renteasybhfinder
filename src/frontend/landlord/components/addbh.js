@@ -387,7 +387,7 @@ const AddBH = ({ onNavigate }) => {
                   {amenitiesList.map((amenity) => (
                     <div
                       key={amenity}
-                      className={`amenity-item ${
+                      className={`addbh-amenity-item ${
                         includedAmenities.includes(amenity) ? 'selected' : ''
                       } ${
                         excludedAmenities.includes(amenity) ? 'disabled' : ''
@@ -406,7 +406,7 @@ const AddBH = ({ onNavigate }) => {
                   {amenitiesList.map((amenity) => (
                     <div
                       key={amenity}
-                      className={`amenity-item ${
+                      className={`addbh-amenity-item ${
                         excludedAmenities.includes(amenity) ? 'selected-excluded' : ''
                       } ${
                         includedAmenities.includes(amenity) ? 'disabled' : ''

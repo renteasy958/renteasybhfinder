@@ -15,18 +15,44 @@ const LLVerify = ({ show, onClose }) => {
     if (!referenceNumber.trim()) return;
     setSubmitting(true);
     try {
+      // Construct full name
+      const fullName = `${userData.firstName || ''} ${userData.middleName || ''} ${userData.surname || ''}`.trim() || 'Unknown';
+      
+      // Construct full address
+      const fullAddress = userData.street && userData.barangay && userData.city && userData.province
+        ? `${userData.street}, ${userData.barangay}, ${userData.city}, ${userData.province}`
+        : 'N/A';
+      
+      // Calculate age from birthdate
+      let age = 'N/A';
+      if (userData.birthdate) {
+        const birthDate = new Date(userData.birthdate);
+        const today = new Date();
+        age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+      }
+      
+      // Construct boarding house address
+      const bhAddress = userData.bhStreet && userData.bhBarangay && userData.bhCity && userData.bhProvince
+        ? `${userData.bhStreet}, ${userData.bhBarangay}, ${userData.bhCity}, ${userData.bhProvince}`
+        : 'N/A';
+      
       await addDoc(collection(db, 'verificationRequests'), {
-        name: `${userData.firstName || ''} ${userData.middleName || ''} ${userData.surname || ''}`.trim(),
+        name: fullName,
         date: new Date().toLocaleString(),
         referenceNumber: referenceNumber.trim(),
         userId: userData.uid || userData.userId || '',
-        address: userData.address || userData.street || '',
-        age: userData.age || '',
-        gender: userData.gender || '',
-        birthdate: userData.birthdate || '',
-        civilStatus: userData.civilStatus || '',
-        boardingHouseName: userData.boardingHouseName || userData.boardinghouseName || '',
-        boardingHouseAddress: userData.boardingHouseAddress || userData.boardinghouseAddress || '',
+        address: fullAddress,
+        age: age,
+        gender: userData.gender || 'N/A',
+        birthdate: userData.birthdate || 'N/A',
+        civilStatus: userData.civilStatus || 'N/A',
+        boardingHouseName: userData.boardingHouseName || 'N/A',
+        boardingHouseAddress: bhAddress,
+        status: 'pending',
       });
       // Add to local history for demo
       const history = JSON.parse(localStorage.getItem('llHistory') || '[]');
