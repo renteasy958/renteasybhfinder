@@ -45,9 +45,9 @@ const BoardingHouses = () => {
 			// Filter based on tab
 			let houses = [];
 			if (activeTab === 'available') {
-				houses = allHouses.filter(h => h.status === 'approved' && !h.tenant);
+				houses = allHouses.filter(h => h.status === 'approved' && (!h.tenantId || !h.tenant));
 			} else if (activeTab === 'occupied') {
-				houses = allHouses.filter(h => h.tenant);
+				houses = allHouses.filter(h => h.tenantId && h.tenant);
 			}
 			setBoardingHouses(houses);
 		};
@@ -152,6 +152,9 @@ const BoardingHouses = () => {
 									{selected.status.toLowerCase() === 'available' && (
 										<div className="modal-info-row"><span className="modal-label">Quantity Available:</span> {selected.quantity}</div>
 									)}
+									{selected.status.toLowerCase() === 'available' && (
+										<div className="modal-info-row"><span className="modal-label">Available Rooms:</span> {selected.availableRooms || 0}</div>
+									)}
 									<div className="modal-amenities">
 										<div className="amenities-section">
 											<div className="amenities-title">Inclusions</div>
@@ -178,17 +181,17 @@ const BoardingHouses = () => {
 											<div>No landlord information available</div>
 										)}
 									</div>
-									{selected.status.toLowerCase() === 'occupied' && selected.tenant && (
+									{(selected.tenantId || selected.tenant) && (
 										<div className="modal-tenant-info">
 											<div className="modal-label">Tenant Info</div>
-											<div>Name: {selected.tenant.name || 'N/A'}</div>
-											<div>Address: {selected.tenant.address || 'N/A'}</div>
-											<div>Age: {selected.tenant.age || 'N/A'}</div>
-											<div>Birthdate: {selected.tenant.birthdate || 'N/A'}</div>
-											<div>Civil Status: {selected.tenant.civilStatus || 'N/A'}</div>
-											<div>Gender: {selected.tenant.gender || 'N/A'}</div>
-											<div>Mobile: {selected.tenant.mobile || 'N/A'}</div>
-											<div>Email: {selected.tenant.email || 'N/A'}</div>
+											<div>Name: {selected.tenant ? selected.tenant.name : 'N/A'}</div>
+											<div>Address: {selected.tenant ? selected.tenant.address : 'N/A'}</div>
+											<div>Age: {selected.tenant ? selected.tenant.age : 'N/A'}</div>
+											<div>Birthdate: {selected.tenant ? selected.tenant.birthdate : 'N/A'}</div>
+											<div>Civil Status: {selected.tenant ? selected.tenant.civilStatus : 'N/A'}</div>
+											<div>Gender: {selected.tenant ? selected.tenant.gender : 'N/A'}</div>
+											<div>Mobile: {selected.tenant ? selected.tenant.mobile : 'N/A'}</div>
+											<div>Email: {selected.tenant ? selected.tenant.email : 'N/A'}</div>
 										</div>
 									)}
 								</div>
