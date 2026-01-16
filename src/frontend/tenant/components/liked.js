@@ -43,7 +43,10 @@ const Liked = ({ onNavigate, searchQuery = '' }) => {
         ) : (
           <div className="liked-cards-container">
             {filteredHouses.map((house, index) => (
-              <div key={house.id || index} className="boarding-card" onClick={() => onNavigate('bhdetails')} style={{ textAlign: 'left' }}>
+              <div key={house.id || index} className="boarding-card" onClick={() => {
+                localStorage.setItem('selectedBHId', house.id);
+                onNavigate('bhdetails');
+              }} style={{ textAlign: 'left' }}>
                 <div
                   className="boarding-card-image"
                   style={house.images && house.images[0] ? {
