@@ -1,8 +1,0 @@
-run = "cd src/backend && npm install && npm start"
-language = "nodejs"
-
-[nix]
-channel = "stable-22_11"
-
-[deployment]
-run = ["sh", "-c", "cd src/backend && npm install && npm start"]
