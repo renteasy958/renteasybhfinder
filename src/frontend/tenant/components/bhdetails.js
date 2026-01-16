@@ -311,6 +311,61 @@ const BHDetails = ({ bhId, onNavigateBack, onNavigate }) => {
                       console.log('DEBUG boardingHouse.userId:', boardingHouse.userId);
                       console.log('DEBUG landlordId in reservation:', reservationData.landlordId);
                       await addDoc(collection(db, 'reservations'), reservationData);
+
+                      // Send email notification to landlord
+                      try {
+                        const { doc: docRef, getDoc } = await import('firebase/firestore');
+                        const landlordDoc = await getDoc(docRef(db, 'users', boardingHouse.userId));
+                        
+                        console.log('Fetching landlord email for userId:', boardingHouse.userId);
+                        
+                        if (landlordDoc.exists()) {
+                          const landlordData = landlordDoc.data();
+                          const landlordEmail = landlordData.email;
+
+                          console.log('Landlord email found:', landlordEmail);
+
+                          if (landlordEmail) {
+                            const emailPayload = {
+                              landlordEmail,
+                              tenantInfo: {
+                                fullName: reservationData.tenantName,
+                                address: reservationData.address,
+                                age: reservationData.age,
+                                birthdate: reservationData.birthdate,
+                                gender: reservationData.gender,
+                                civilStatus: reservationData.civilStatus,
+                                contactNumber: reservationData.contactNumber,
+                              },
+                              boardingHouseInfo: {
+                                name: reservationData.boardingHouse,
+                                address: reservationData.bhAddress,
+                                type: reservationData.type,
+                                price: reservationData.price,
+                                reservationDate: reservationData.date,
+                              },
+                            };
+
+                            console.log('Sending email with payload:', emailPayload);
+
+                            const response = await fetch('http://localhost:5000/send-reservation-email', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify(emailPayload),
+                            });
+
+                            const result = await response.json();
+                            console.log('Email response:', result);
+                          } else {
+                            console.log('No email found for landlord');
+                          }
+                        } else {
+                          console.log('Landlord document does not exist');
+                        }
+                      } catch (emailErr) {
+                        console.error('Failed to send email notification:', emailErr);
+                        // Don't block the reservation if email fails
+                      }
                     } catch (err) {
                       alert('Failed to submit reservation. Please try again.');
                       return;
