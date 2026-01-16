@@ -3,7 +3,21 @@ import '../styles/liked.css';
 import Navbar from './navbar';
 
 const Liked = ({ onNavigate, searchQuery = '' }) => {
-  const likedBoardingHouses = JSON.parse(localStorage.getItem('likedBoardingHouses') || '[]');
+  let likedBoardingHouses = JSON.parse(localStorage.getItem('likedBoardingHouses') || '[]');
+  
+  // Remove duplicates based on ID
+  const uniqueHouses = [];
+  const seenIds = new Set();
+  for (const house of likedBoardingHouses) {
+    if (!seenIds.has(house.id)) {
+      uniqueHouses.push(house);
+      seenIds.add(house.id);
+    }
+  }
+  likedBoardingHouses = uniqueHouses;
+  
+  // Save deduplicated list back to localStorage
+  localStorage.setItem('likedBoardingHouses', JSON.stringify(likedBoardingHouses));
 
   // Filter liked boarding houses by search query (name or address)
   const safeLower = val => (typeof val === 'string' ? val.toLowerCase() : '');
