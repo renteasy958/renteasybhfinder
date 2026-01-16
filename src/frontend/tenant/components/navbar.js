@@ -3,7 +3,7 @@ import '../styles/navbar.css';
 import { auth } from '../../../firebase/config';
 import { signOut } from 'firebase/auth';
 
-const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
+const Navbar = ({ onNavigate, onSettingsClick, onSearch, onSearchResults, listings = [], currentPage }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filter, setFilter] = useState({
@@ -46,6 +46,45 @@ const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
   }, []);
 
   const [searchValue, setSearchValue] = useState('');
+
+  const applyFilter = () => {
+    const safeQuery = typeof searchValue === 'string' ? searchValue.toLowerCase() : '';
+    
+    // First filter by search query
+    let results = listings.filter(house =>
+      (house.name && house.name.toLowerCase().includes(safeQuery)) ||
+      (house.address && house.address.toLowerCase().includes(safeQuery)) ||
+      (house.sitio && house.sitio.toLowerCase().includes(safeQuery)) ||
+      (house.barangay && house.barangay.toLowerCase().includes(safeQuery)) ||
+      (house.municipality && house.municipality.toLowerCase().includes(safeQuery)) ||
+      (house.province && house.province.toLowerCase().includes(safeQuery))
+    );
+
+    // Then apply additional filters
+    if (pendingFilter.type) {
+      results = results.filter(house => house.type === pendingFilter.type);
+    }
+
+    if (pendingFilter.location) {
+      results = results.filter(house => house.barangay === pendingFilter.location);
+    }
+
+    if (pendingFilter.price) {
+      results = results.filter(house => {
+        const price = parseInt(house.price?.replace(/[^0-9]/g, '') || '0');
+        if (pendingFilter.price === '500-1000') return price >= 500 && price <= 1000;
+        if (pendingFilter.price === '1001-2500') return price >= 1001 && price <= 2500;
+        if (pendingFilter.price === '2501-up') return price >= 2501;
+        return true;
+      });
+    }
+
+    setFilter(pendingFilter);
+    setIsFilterOpen(false);
+    if (onSearchResults) onSearchResults(results);
+    if (onNavigate) onNavigate('searchresults');
+  };
+
   return (
     <nav className="navbar-container">
       <div className="navbar-logo">
@@ -55,22 +94,20 @@ const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            // Get all boarding houses from localStorage
-            const allHouses = JSON.parse(localStorage.getItem('boardingHouses') || '[]');
             const query = (searchValue || '').toLowerCase();
-            // Only show relevant results
-            const results = allHouses.filter(house => {
-              return (
-                (house.name && house.name.toLowerCase().includes(query)) ||
-                (house.address && house.address.toLowerCase().includes(query)) ||
-                (house.sitio && house.sitio.toLowerCase().includes(query)) ||
-                (house.barangay && house.barangay.toLowerCase().includes(query)) ||
-                (house.municipality && house.municipality.toLowerCase().includes(query)) ||
-                (house.province && house.province.toLowerCase().includes(query))
-              );
-            });
-            // Only pass results if query is not empty
-            if (onSearch) onSearch(query ? results : []);
+            
+            // Filter listings by search query
+            const results = listings.filter(house =>
+              (house.name && house.name.toLowerCase().includes(query)) ||
+              (house.address && house.address.toLowerCase().includes(query)) ||
+              (house.sitio && house.sitio.toLowerCase().includes(query)) ||
+              (house.barangay && house.barangay.toLowerCase().includes(query)) ||
+              (house.municipality && house.municipality.toLowerCase().includes(query)) ||
+              (house.province && house.province.toLowerCase().includes(query))
+            );
+            
+            // Pass results and navigate
+            if (onSearchResults) onSearchResults(results);
             if (onNavigate) onNavigate('searchresults');
           }}
           style={{ display: 'flex', alignItems: 'center' }}
@@ -109,103 +146,106 @@ const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
             borderRadius: '8px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             zIndex: 10,
-            padding: '16px',
-            minWidth: '220px',
+            padding: '10px',
+            minWidth: '340px',
             textAlign: 'left',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '10px',
           }}>
-            <div style={{ marginBottom: '12px' }}>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Type:</label>
+            <div style={{ marginBottom: '0px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '4px', fontSize: '12px' }}>Type:</label>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {['Bed spacer','Single Room','Shared Room (2-4 pax)','Shared Room (5-8 pax)','Apartment Type','Family'].map(option => (
-                  <li key={option} style={{ marginBottom: '4px' }}>
-                    <label style={{ cursor: 'pointer' }}>
+                  <li key={option} style={{ marginBottom: '2px' }}>
+                    <label style={{ cursor: 'pointer', fontSize: '12px' }}>
                       <input
                         type="radio"
                         name="filter-type"
                         value={option}
                         checked={pendingFilter.type === option}
                         onChange={() => setPendingFilter(f => ({ ...f, type: option }))}
-                        style={{ marginRight: '6px' }}
+                        style={{ marginRight: '4px' }}
                       />
                       {option}
                     </label>
                   </li>
                 ))}
-                <li>
-                  <label style={{ cursor: 'pointer' }}>
+                <li style={{ marginBottom: '2px' }}>
+                  <label style={{ cursor: 'pointer', fontSize: '12px' }}>
                     <input
                       type="radio"
                       name="filter-type"
                       value=""
                       checked={pendingFilter.type === ''}
                       onChange={() => setPendingFilter(f => ({ ...f, type: '' }))}
-                      style={{ marginRight: '6px' }}
+                      style={{ marginRight: '4px' }}
                     />
                     Any
                   </label>
                 </li>
               </ul>
             </div>
-            <div style={{ marginBottom: '12px' }}>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Location:</label>
+            <div style={{ marginBottom: '0px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '4px', fontSize: '12px' }}>Location:</label>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {['Barangay 1','Barangay 2','Barangay 3','Barangay 4','Barangay 5','Barangay 6','Barangay 7','Barangay 8','Barangay 9'].map(option => (
-                  <li key={option} style={{ marginBottom: '4px' }}>
-                    <label style={{ cursor: 'pointer' }}>
+                  <li key={option} style={{ marginBottom: '2px' }}>
+                    <label style={{ cursor: 'pointer', fontSize: '12px' }}>
                       <input
                         type="radio"
                         name="filter-location"
                         value={option}
                         checked={pendingFilter.location === option}
                         onChange={() => setPendingFilter(f => ({ ...f, location: option }))}
-                        style={{ marginRight: '6px' }}
+                        style={{ marginRight: '4px' }}
                       />
                       {option}
                     </label>
                   </li>
                 ))}
-                <li>
-                  <label style={{ cursor: 'pointer' }}>
+                <li style={{ marginBottom: '2px' }}>
+                  <label style={{ cursor: 'pointer', fontSize: '12px' }}>
                     <input
                       type="radio"
                       name="filter-location"
                       value=""
                       checked={pendingFilter.location === ''}
                       onChange={() => setPendingFilter(f => ({ ...f, location: '' }))}
-                      style={{ marginRight: '6px' }}
+                      style={{ marginRight: '4px' }}
                     />
                     Any
                   </label>
                 </li>
               </ul>
             </div>
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Price:</label>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <div style={{ marginBottom: '0px', gridColumn: '1 / -1' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '4px', fontSize: '12px' }}>Price:</label>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '12px' }}>
                 {['500-1000','1001-2500','2501-up'].map(option => (
-                  <li key={option} style={{ marginBottom: '4px' }}>
-                    <label style={{ cursor: 'pointer' }}>
+                  <li key={option} style={{ marginBottom: '0px' }}>
+                    <label style={{ cursor: 'pointer', fontSize: '12px' }}>
                       <input
                         type="radio"
                         name="filter-price"
                         value={option}
                         checked={pendingFilter.price === option}
                         onChange={() => setPendingFilter(f => ({ ...f, price: option }))}
-                        style={{ marginRight: '6px' }}
+                        style={{ marginRight: '4px' }}
                       />
                       {option}
                     </label>
                   </li>
                 ))}
-                <li>
-                  <label style={{ cursor: 'pointer' }}>
+                <li style={{ marginBottom: '0px' }}>
+                  <label style={{ cursor: 'pointer', fontSize: '12px' }}>
                     <input
                       type="radio"
                       name="filter-price"
                       value=""
                       checked={pendingFilter.price === ''}
                       onChange={() => setPendingFilter(f => ({ ...f, price: '' }))}
-                      style={{ marginRight: '6px' }}
+                      style={{ marginRight: '4px' }}
                     />
                     Any
                   </label>
@@ -213,11 +253,10 @@ const Navbar = ({ onNavigate, onSettingsClick, onSearch, currentPage }) => {
               </ul>
             </div>
             <button
-              style={{ width: '100%', padding: '8px', background: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
+              style={{ width: '100%', padding: '6px', background: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px', gridColumn: '1 / -1' }}
               onClick={e => {
                 e.preventDefault();
-                setFilter(pendingFilter);
-                setIsFilterOpen(false);
+                applyFilter();
               }}
             >
               Apply Filter

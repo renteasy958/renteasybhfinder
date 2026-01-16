@@ -14,10 +14,13 @@ const SearchResults = ({ results, onBack, onNavigate }) => {
   return (
     <div className="home-container">
       <Navbar onNavigate={onNavigate} />
-      <button onClick={onBack} style={{ position: 'absolute', top: 90, left: 20, zIndex: 2, background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}>
-        ← Back
-      </button>
       <div className="home-hero">
+        <button onClick={() => onNavigate('home')} className="back-btn" style={{ position: 'relative', top: 'auto', left: 'auto', marginBottom: '20px' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Back</span>
+        </button>
         <h2 className="home-hero-text">Search Results</h2>
         {results.length === 0 ? (
           <p>No boarding houses found.</p>

@@ -39,6 +39,7 @@ const Home = ({ onNavigateToBHDetails, onNavigate, onSearchResults }) => {
     <div className="home-container">
       <Navbar
         onNavigate={onNavigate}
+        listings={listings}
         onSearch={query => {
           // Ensure query is a string before using toLowerCase
           const safeQuery = typeof query === 'string' ? query.toLowerCase() : '';
@@ -52,6 +53,7 @@ const Home = ({ onNavigateToBHDetails, onNavigate, onSearchResults }) => {
           );
           onSearchResults(results);
         }}
+        onSearchResults={onSearchResults}
         currentPage="home"
       />
       <div className="home-hero">
